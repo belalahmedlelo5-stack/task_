@@ -1,6 +1,6 @@
 /**
  * SERVER ONLY — Google Sheets API Client
- * Uses Google Service Account to execute a single batchGet across all 4 tabs.
+ * Supports both Google Service Account (JWT) and public sheet direct sync.
  * Never import this file into Client Components.
  */
 
@@ -16,21 +16,16 @@ export interface GoogleSheetsRawData {
 }
 
 export function isGoogleSheetsConfigured(): boolean {
-  return Boolean(
-    process.env.GOOGLE_SHEET_ID &&
-    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-    process.env.GOOGLE_PRIVATE_KEY
-  );
+  return Boolean(process.env.GOOGLE_SHEET_ID);
 }
 
 /**
- * Creates Google OAuth 2.0 access token using Service Account JWT via standard crypto/fetch
+ * Creates Google OAuth 2.0 access token using Service Account JWT
  */
 async function getGoogleAccessToken(
   clientEmail: string,
   privateKeyPem: string
 ): Promise<string> {
-  // Use Node crypto
   const crypto = await import("crypto");
 
   const now = Math.floor(Date.now() / 1000);
@@ -51,7 +46,6 @@ async function getGoogleAccessToken(
   signer.update(signatureInput);
   signer.end();
 
-  // Normalize private key escaped newlines
   const normalizedKey = privateKeyPem.replace(/\\n/g, "\n");
   const signature = signer.sign(normalizedKey, "base64url");
   const jwt = `${signatureInput}.${signature}`;
@@ -85,7 +79,7 @@ function rowsToObjects(values?: string[][]): RawSheetRow[] {
   for (let i = 1; i < values.length; i++) {
     const row = values[i];
     if (!row || row.length === 0 || row.every((cell) => !cell || !cell.trim())) {
-      continue; // Skip empty row
+      continue;
     }
 
     const obj: RawSheetRow = {};
@@ -99,54 +93,128 @@ function rowsToObjects(values?: string[][]): RawSheetRow[] {
 }
 
 /**
- * Executes a single batchGet request to retrieve Subjects, Materials, Tasks, and Sessions
+ * Parses RFC 4180 CSV text into objects based on header row
+ */
+function parseCsvToObjects(csvText: string): RawSheetRow[] {
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentField = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < csvText.length; i++) {
+    const char = csvText[i];
+    const nextChar = csvText[i + 1];
+
+    if (inQuotes) {
+      if (char === '"' && nextChar === '"') {
+        currentField += '"';
+        i++;
+      } else if (char === '"') {
+        inQuotes = false;
+      } else {
+        currentField += char;
+      }
+    } else {
+      if (char === '"') {
+        inQuotes = true;
+      } else if (char === ",") {
+        currentRow.push(currentField);
+        currentField = "";
+      } else if (char === "\r") {
+        // ignore carriage return
+      } else if (char === "\n") {
+        currentRow.push(currentField);
+        rows.push(currentRow);
+        currentRow = [];
+        currentField = "";
+      } else {
+        currentField += char;
+      }
+    }
+  }
+
+  if (currentField || currentRow.length > 0) {
+    currentRow.push(currentField);
+    rows.push(currentRow);
+  }
+
+  return rowsToObjects(rows);
+}
+
+/**
+ * Fetches sheet data via public Google visualization CSV export
+ */
+async function fetchTabCsv(sheetId: string, tabName: string): Promise<RawSheetRow[]> {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+  const res = await fetch(url, {
+    next: { revalidate: 10 },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch tab ${tabName}: ${res.status} ${res.statusText}`);
+  }
+
+  const csvText = await res.text();
+  return parseCsvToObjects(csvText);
+}
+
+/**
+ * Executes batchGet via Service Account or fallback to direct public sync
  */
 export async function fetchRawDataFromSheets(): Promise<GoogleSheetsRawData> {
   const sheetId = process.env.GOOGLE_SHEET_ID;
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY;
 
-  if (!sheetId || !clientEmail || !privateKey) {
-    throw new Error("Missing Google Sheets credentials in environment variables.");
+  if (!sheetId) {
+    throw new Error("Missing GOOGLE_SHEET_ID in environment variables.");
   }
 
-  const token = await getGoogleAccessToken(clientEmail, privateKey);
+  // If Service Account is fully configured, use official Google Sheets batchGet API
+  if (clientEmail && privateKey) {
+    try {
+      const token = await getGoogleAccessToken(clientEmail, privateKey);
+      const ranges = [
+        "Subjects!A1:Z",
+        "Materials!A1:Z",
+        "Tasks!A1:Z",
+        "Sessions!A1:Z",
+      ];
 
-  const ranges = [
-    "Subjects!A1:Z",
-    "Materials!A1:Z",
-    "Tasks!A1:Z",
-    "Sessions!A1:Z",
-  ];
+      const url = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet`);
+      ranges.forEach((r) => url.searchParams.append("ranges", r));
+      url.searchParams.append("valueRenderOption", "UNFORMATTED_VALUE");
+      url.searchParams.append("dateTimeRenderOption", "FORMATTED_STRING");
 
-  const url = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet`);
-  ranges.forEach((r) => url.searchParams.append("ranges", r));
-  url.searchParams.append("valueRenderOption", "UNFORMATTED_VALUE");
-  url.searchParams.append("dateTimeRenderOption", "FORMATTED_STRING");
+      const response = await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    // We handle caching at the route level
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`Google Sheets API batchGet error: ${response.status} ${errorBody}`);
+      if (response.ok) {
+        const result = (await response.json()) as {
+          valueRanges?: Array<{ range: string; values?: string[][] }>;
+        };
+        const valueRanges = result.valueRanges || [];
+        return {
+          subjects: rowsToObjects(valueRanges[0]?.values),
+          materials: rowsToObjects(valueRanges[1]?.values),
+          tasks: rowsToObjects(valueRanges[2]?.values),
+          sessions: rowsToObjects(valueRanges[3]?.values),
+        };
+      }
+    } catch (e) {
+      console.warn("[Sheets Server] Service account failed, falling back to direct sync:", e);
+    }
   }
 
-  const result = (await response.json()) as {
-    valueRanges?: Array<{ range: string; values?: string[][] }>;
-  };
+  // Direct sync mode (works with publicly viewable sheets)
+  const [subjects, materials, tasks, sessions] = await Promise.all([
+    fetchTabCsv(sheetId, "Subjects"),
+    fetchTabCsv(sheetId, "Materials"),
+    fetchTabCsv(sheetId, "Tasks"),
+    fetchTabCsv(sheetId, "Sessions"),
+  ]);
 
-  const valueRanges = result.valueRanges || [];
-
-  return {
-    subjects: rowsToObjects(valueRanges[0]?.values),
-    materials: rowsToObjects(valueRanges[1]?.values),
-    tasks: rowsToObjects(valueRanges[2]?.values),
-    sessions: rowsToObjects(valueRanges[3]?.values),
-  };
+  return { subjects, materials, tasks, sessions };
 }

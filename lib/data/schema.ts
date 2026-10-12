@@ -4,6 +4,7 @@ import { z } from "zod";
 export const SubjectStatusEnum = z.enum(["ACTIVE", "ARCHIVED"]);
 
 export const MaterialCategoryEnum = z.enum([
+  "FOLDER",
   "LECTURE",
   "SECTION",
   "TUTORIAL",
@@ -52,7 +53,7 @@ export const SubjectSchema = z.object({
 });
 
 export const RawMaterialSchema = z.object({
-  material_id: z.string().regex(/^mat-[0-9]{4,}$/),
+  material_id: z.string().regex(/^(mat|material)-[0-9]{4,}$/),
   subject_id: z.string(),
   category: MaterialCategoryEnum,
   title: z.string().min(1),
@@ -89,7 +90,7 @@ export const PublicMaterialSchema = z.object({
 });
 
 export const RawTaskSchema = z.object({
-  task_id: z.string().regex(/^tsk-[0-9]{4,}$/),
+  task_id: z.string().regex(/^(tsk|task)-[0-9]{4,}$/),
   subject_id: z.string(),
   title: z.string().min(1),
   task_type: TaskTypeEnum,
@@ -147,7 +148,7 @@ export const PublicTaskSchema = z.object({
 });
 
 export const RawSessionSchema = z.object({
-  session_id: z.string().regex(/^ses-[0-9]{4,}$/),
+  session_id: z.string().regex(/^(ses|session)-[0-9]{4,}$/),
   subject_id: z.string(),
   session_type: SessionTypeEnum,
   session_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

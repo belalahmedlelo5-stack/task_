@@ -48,6 +48,7 @@ export function MaterialList({ materials = [] }: MaterialListProps) {
 
   const categoryTabs = [
     { id: "ALL", label: "الكل", count: groupFiltered.length },
+    { id: "FOLDER", label: "مجلدات الداتا الشاملة", count: categoryCounts["FOLDER"] || 0 },
     { id: "LECTURE", label: "المحاضرات", count: categoryCounts["LECTURE"] || 0 },
     { id: "SECTION", label: "السكاشن والعملي", count: categoryCounts["SECTION"] || 0 },
     { id: "TUTORIAL", label: "التوتوريال", count: categoryCounts["TUTORIAL"] || 0 },

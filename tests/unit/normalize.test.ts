@@ -177,3 +177,66 @@ test("normalizeAllData rejects invalid cohort group tokens", () => {
   assert.match(errors[0].reason, /Invalid group token/);
   assert.match(errors[1].reason, /Invalid group token/);
 });
+
+test("normalizeAllData automatically pads single-digit time and formats slash dates", () => {
+  const raw = {
+    subjects: [
+      {
+        subject_id: "gene-therapy",
+        name_en: "Gene Therapy",
+        sort_order: 1,
+        status: "ACTIVE",
+      },
+    ],
+    materials: [],
+    tasks: [
+      {
+        task_id: "tsk-0001",
+        subject_id: "gene-therapy",
+        title: "Test Task",
+        task_type: "ASSIGNMENT",
+        due_date: "2026/10/25",
+        due_time: "9:30",
+        task_status: "OPEN",
+        created_on: "2026-10-10",
+        updated_on: "2026-10-10",
+        publish_status: "PUBLISHED",
+      },
+    ],
+    sessions: [
+      {
+        session_id: "ses-0001",
+        subject_id: "gene-therapy",
+        session_type: "LECTURE",
+        session_date: "2026-10-15",
+        start_time: "8:45",
+        end_time: "10:25",
+        groups: "ALL",
+        status: "SCHEDULED",
+      },
+      {
+        session_id: "ses-0002",
+        subject_id: "gene-therapy",
+        session_type: "SECTION",
+        session_date: "2026-10-16",
+        start_time: "08:45:00",
+        end_time: "10:25:00",
+        groups: "A",
+        status: "SCHEDULED",
+      },
+    ],
+  };
+
+  const { data, errors } = normalizeAllData(raw);
+  assert.equal(errors.length, 0);
+  assert.equal(data.tasks.length, 1);
+  assert.equal(data.tasks[0].due_date, "2026-10-25");
+  assert.equal(data.tasks[0].due_time, "09:30");
+
+  assert.equal(data.sessions.length, 2);
+  assert.equal(data.sessions[0].start_time, "08:45");
+  assert.equal(data.sessions[0].end_time, "10:25");
+  assert.equal(data.sessions[1].start_time, "08:45");
+  assert.equal(data.sessions[1].end_time, "10:25");
+});
+

@@ -24,6 +24,31 @@ function sanitizeText(str?: unknown): string {
   return String(str).replace(/<[^>]*>?/gm, "").trim();
 }
 
+export function normalizeTime(val?: unknown): string {
+  let sanitized = sanitizeText(val);
+  if (!sanitized) return "";
+  // Strip trailing :00 seconds if present (e.g. 08:45:00 or 8:45:00)
+  if (/^\d{1,2}:\d{2}:\d{2}$/.test(sanitized)) {
+    sanitized = sanitized.slice(0, sanitized.lastIndexOf(":"));
+  }
+  // Pad single digit hour (e.g. 8:45 -> 08:45)
+  if (/^\d:[0-5]\d$/.test(sanitized)) {
+    return `0${sanitized}`;
+  }
+  return sanitized;
+}
+
+export function normalizeDate(val?: unknown): string {
+  const sanitized = sanitizeText(val);
+  if (!sanitized) return "";
+  const slashMatch = sanitized.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
+  if (slashMatch) {
+    const [, y, m, d] = slashMatch;
+    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+  }
+  return sanitized;
+}
+
 export function normalizeSubjects(
   rawRows: Array<RawRow>
 ): { subjects: Subject[]; errors: Array<{ tab: string; id: string; reason: string }> } {
@@ -69,6 +94,36 @@ export function normalizeSubjects(
   return { subjects, errors };
 }
 
+function getField(row: RawRow, ...keys: string[]): string {
+  for (const k of keys) {
+    for (const rowKey of Object.keys(row)) {
+      const cleanRowKey = rowKey.toLowerCase().trim();
+      const target = k.toLowerCase().trim();
+      if (cleanRowKey === target || cleanRowKey.startsWith(target) || cleanRowKey.includes(target)) {
+        const val = sanitizeText(row[rowKey]);
+        if (val) return val;
+      }
+    }
+  }
+  return "";
+}
+
+function resolveSubjectId(row: RawRow, validSubjectIds: Set<string>): string {
+  const rawSubId = getField(row, "subject_id").toLowerCase();
+  if (validSubjectIds.has(rawSubId)) return rawSubId;
+
+  const combined = `${row.subject_id || ""} ${row.subject_name || ""} ${row.name_en || ""} ${row.name_ar || ""} ${row.course_code || ""} ${row.subject || ""}`.toLowerCase();
+  if (combined.includes("stem cell") || combined.includes("خلايا") || combined.includes("جذعية") || combined.includes("mbscb403")) return "stem-cell-biology";
+  if (combined.includes("drug") || combined.includes("دواء") || combined.includes("ebdm151")) return "drug-monitoring";
+  if (combined.includes("microbial") || combined.includes("وراثة") || combined.includes("mbmg310")) return "microbial-genetics";
+  if (combined.includes("gene") || combined.includes("جيني") || combined.includes("mbgt309")) return "gene-therapy";
+  if (combined.includes("recombinant") || combined.includes("اتحاد") || combined.includes("mbbmbr213")) return "recombinant-dna-technology";
+  if (combined.includes("communication") || combined.includes("signaling") || combined.includes("إشارات") || combined.includes("اتصال") || combined.includes("mbccs410")) return "communication-cell-signaling";
+  if (combined.includes("industry") || combined.includes("bacterial") || combined.includes("بكتيرية") || combined.includes("صناعية") || combined.includes("mbibb313")) return "industry-bacterial-biotechnology";
+
+  return "";
+}
+
 export function normalizeMaterials(
   rawRows: Array<RawRow>,
   validSubjectIds: Set<string>
@@ -76,28 +131,56 @@ export function normalizeMaterials(
   const materials: PublicMaterial[] = [];
   const errors: Array<{ tab: string; id: string; reason: string }> = [];
   const seenIds = new Set<string>();
+  let autoIdCounter = 1;
 
   for (const row of rawRows) {
-    const rawId = sanitizeText(String(row.material_id || ""));
-    if (!rawId) continue;
+    const driveUrl = getField(row, "drive_url", "drive", "url", "رابط");
+    const rawTitle = getField(row, "title", "name", "عنوان", "اسم المحتوى");
+    const subjectName = getField(row, "subject_name", "subject", "اسم المادة");
 
-    if (seenIds.has(rawId)) {
-      errors.push({ tab: "Materials", id: rawId, reason: "Duplicate material_id" });
+    // Skip completely empty rows
+    if (!driveUrl && !rawTitle && !row.subject_id && !subjectName) {
       continue;
     }
 
+    let rawId = getField(row, "material_id", "id");
+    if (!rawId) {
+      rawId = `mat-${String(autoIdCounter++).padStart(4, "0")}`;
+    }
+
+    if (seenIds.has(rawId)) {
+      rawId = `mat-${String(autoIdCounter++).padStart(4, "0")}`;
+    }
+
+    const resolvedSub = resolveSubjectId(row, validSubjectIds) || sanitizeText(String(row.subject_id || ""));
+
+    let category = getField(row, "category", "نوع", "تصنيف").toUpperCase();
+    if (!category || !["FOLDER", "LECTURE", "SECTION", "TUTORIAL", "QUESTIONS", "SUPPLEMENT", "OTHER"].includes(category)) {
+      const lowerTitle = rawTitle.toLowerCase();
+      if (driveUrl.includes("/folders/") || lowerTitle.includes("فولدر") || lowerTitle.includes("مجلد") || lowerTitle.includes("folder")) {
+        category = "FOLDER";
+      } else {
+        category = "LECTURE";
+      }
+    }
+
+    const addedOn = normalizeDate(getField(row, "added_on", "تاريخ")) || "2026-10-12";
+    const status = getField(row, "status", "حالة").toUpperCase() || "PUBLISHED";
+    const notes = getField(row, "notes", "ملاحظات", "note");
+    const groups = getField(row, "groups", "جروب") || "ALL";
+
     const rawParsed = RawMaterialSchema.safeParse({
       material_id: rawId,
-      subject_id: sanitizeText(String(row.subject_id || "")),
-      category: String(row.category || "").trim().toUpperCase(),
-      title: sanitizeText(String(row.title || "")),
+      subject_id: resolvedSub,
+      category,
+      title: rawTitle || (category === "FOLDER" ? "مجلد داتا المادة الشامل" : "ملف المادة"),
       sequence_no: row.sequence_no ? Number(row.sequence_no) : null,
-      groups: sanitizeText(String(row.groups || "ALL")),
-      drive_url: sanitizeText(String(row.drive_url || "")),
+      groups,
+      drive_url: driveUrl,
       original_filename: sanitizeText(String(row.original_filename || "")),
-      added_on: sanitizeText(String(row.added_on || "")),
-      status: String(row.status || "").trim().toUpperCase(),
-      notes: sanitizeText(String(row.notes || "")),
+      added_on: addedOn,
+      status,
+      notes,
     });
 
     if (!rawParsed.success) {
@@ -218,12 +301,12 @@ export function normalizeTasks(
       task_type: String(row.task_type || "").trim().toUpperCase(),
       description: sanitizeText(String(row.description || "")),
       groups: sanitizeText(String(row.groups || "ALL")),
-      due_date: sanitizeText(String(row.due_date || "")),
-      due_time: sanitizeText(String(row.due_time || "")),
+      due_date: normalizeDate(row.due_date),
+      due_time: normalizeTime(row.due_time),
       related_material_ids: sanitizeText(String(row.related_material_ids || "")),
       task_status: String(row.task_status || "OPEN").trim().toUpperCase(),
-      created_on: sanitizeText(String(row.created_on || "")),
-      updated_on: sanitizeText(String(row.updated_on || "")),
+      created_on: normalizeDate(row.created_on),
+      updated_on: normalizeDate(row.updated_on),
       publish_status: String(row.publish_status || "").trim().toUpperCase(),
     });
 
@@ -324,9 +407,9 @@ export function normalizeSessions(
       session_id: rawId,
       subject_id: sanitizeText(String(row.subject_id || "")),
       session_type: String(row.session_type || "").trim().toUpperCase(),
-      session_date: sanitizeText(String(row.session_date || "")),
-      start_time: sanitizeText(String(row.start_time || "")),
-      end_time: sanitizeText(String(row.end_time || "")),
+      session_date: normalizeDate(row.session_date),
+      start_time: normalizeTime(row.start_time),
+      end_time: normalizeTime(row.end_time),
       groups: sanitizeText(String(row.groups || "ALL")),
       location: sanitizeText(String(row.location || "")),
       note: sanitizeText(String(row.note || "")),

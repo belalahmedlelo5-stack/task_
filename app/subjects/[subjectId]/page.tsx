@@ -58,6 +58,38 @@ export default async function SubjectDetailPage({ params }: SubjectDetailPagePro
         </div>
       </div>
 
+      {/* Drive Folder Banner if present */}
+      {(() => {
+        const folderMaterial = subjectMaterials.find((m) => m.category === "FOLDER");
+        if (!folderMaterial) return null;
+        return (
+          <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-emerald-950">
+                  مجلد داتا المادة الشامل على Google Drive
+                </h3>
+                <p className="text-xs text-emerald-800 font-medium">
+                  يحتوي على كافة ملفات ومحاضرات وسكاشن المادة، ويمكن لليدر والطلاب التصفح والتحميل المباشر.
+                </p>
+              </div>
+            </div>
+            <a
+              href={folderMaterial.drive_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition-colors shadow-2xs shrink-0"
+            >
+              <span>فتح وتنزيل كل الداتا</span>
+              <ArrowRight className="w-4 h-4 rotate-180" />
+            </a>
+          </div>
+        );
+      })()}
+
       {/* Materials Section */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
