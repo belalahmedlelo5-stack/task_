@@ -12,7 +12,7 @@ interface TaskFiltersProps {
 }
 
 export function TaskFilters({
-  subjects,
+  subjects = [],
   selectedSubject,
   onSubjectChange,
   selectedType,
@@ -20,6 +20,7 @@ export function TaskFilters({
   statusFilter,
   onStatusFilterChange,
 }: TaskFiltersProps) {
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
   const taskTypes = [
     { value: "ALL", label: "كل الأنواع" },
     { value: "ASSIGNMENT", label: "تكليفات" },
@@ -45,7 +46,7 @@ export function TaskFilters({
           className="w-full text-xs sm:text-sm py-2 px-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >
           <option value="ALL">جميع المواد</option>
-          {subjects.map((s) => (
+          {safeSubjects.map((s) => (
             <option key={s.subject_id} value={s.subject_id}>
               {s.name_en} {s.name_ar ? `(${s.name_ar})` : ""}
             </option>

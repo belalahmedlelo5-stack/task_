@@ -33,7 +33,8 @@ export default async function HomePage() {
 
   // Recent materials (top 4 published files)
   const recentMaterials = [...materials]
-    .sort((a, b) => b.added_on.localeCompare(a.added_on))
+    .filter(Boolean)
+    .sort((a, b) => (b.added_on || "").localeCompare(a.added_on || ""))
     .slice(0, 4);
 
   return (
@@ -126,36 +127,39 @@ export default async function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {subjects.map((s) => (
-            <Link
-              key={s.subject_id}
-              href={`/subjects/${s.subject_id}`}
-              className="p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-300 hover:shadow-sm transition-all group flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                    مادة {s.sort_order}
-                  </span>
-                  {s.course_code && (
-                    <span className="text-[11px] font-mono text-slate-400">
-                      {s.course_code}
+          {subjects.map((s) => {
+            if (!s) return null;
+            return (
+              <Link
+                key={s.subject_id}
+                href={`/subjects/${s.subject_id}`}
+                className="p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-300 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      مادة {s.sort_order}
                     </span>
+                    {s.course_code && (
+                      <span className="text-[11px] font-mono text-slate-400">
+                        {s.course_code}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
+                    {s.name_en}
+                  </h3>
+                  {s.name_ar && (
+                    <p className="text-xs text-slate-500 mt-0.5">{s.name_ar}</p>
                   )}
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                  {s.name_en}
-                </h3>
-                {s.name_ar && (
-                  <p className="text-xs text-slate-500 mt-0.5">{s.name_ar}</p>
-                )}
-              </div>
-              <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-                <span>تصفح المحاضرات والسكاشن</span>
-                <ArrowLeft className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-600 transition-colors" />
-              </div>
-            </Link>
-          ))}
+                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                  <span>تصفح المحاضرات والسكاشن</span>
+                  <ArrowLeft className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-600 transition-colors" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -166,9 +170,10 @@ export default async function HomePage() {
             <h2 className="text-lg font-bold text-slate-900">أحدث الملفات المضافة</h2>
           </div>
           <div className="grid gap-2.5">
-            {recentMaterials.map((mat) => (
-              <MaterialRow key={mat.material_id} material={mat} />
-            ))}
+            {recentMaterials.map((mat) => {
+              if (!mat) return null;
+              return <MaterialRow key={mat.material_id} material={mat} />;
+            })}
           </div>
         </section>
       )}

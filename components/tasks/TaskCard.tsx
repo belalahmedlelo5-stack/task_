@@ -21,10 +21,14 @@ export function TaskCard({
   isCompleted = false,
   onToggleComplete,
 }: TaskCardProps) {
+  if (!task) return null;
+
   const isOverdue =
     task.task_status === "OPEN" && !isCompleted && isOverdueInCairo(task.due_date, task.due_time);
   const deadlineText = formatCairoDeadline(task.due_date, task.due_time);
   const isClosed = task.task_status === "CLOSED";
+  const taskGroups = Array.isArray(task.groups) ? task.groups : [];
+  const materialsList = Array.isArray(relatedMaterials) ? relatedMaterials : [];
 
   return (
     <div
@@ -43,7 +47,7 @@ export function TaskCard({
             {subject?.name_en || task.subject_id}
           </span>
           <TaskTypeBadge type={task.task_type} />
-          {task.groups.map((g) => (
+          {taskGroups.map((g) => (
             <GroupBadge key={g} group={g} />
           ))}
         </div>
@@ -115,25 +119,28 @@ export function TaskCard({
         </div>
 
         {/* Related Materials Links */}
-        {relatedMaterials.length > 0 && (
+        {materialsList.length > 0 && (
           <div className="flex items-center gap-2 mr-auto">
             <span className="text-slate-400 flex items-center gap-1">
               <FileText className="w-3.5 h-3.5" />
               ملفات مساندة:
             </span>
             <div className="flex flex-wrap gap-1">
-              {relatedMaterials.map((mat) => (
-                <a
-                  key={mat.material_id}
-                  href={mat.drive_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded text-xs transition-colors"
-                >
-                  <span>{mat.title}</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              ))}
+              {materialsList.map((mat) => {
+                if (!mat) return null;
+                return (
+                  <a
+                    key={mat.material_id}
+                    href={mat.drive_url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded text-xs transition-colors"
+                  >
+                    <span>{mat.title || "ملف مساند"}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}

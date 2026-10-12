@@ -42,8 +42,11 @@ export function Header() {
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
                 const Icon = link.icon;
-                const isActive =
-                  pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+                const isActive = Boolean(
+                  pathname &&
+                    (pathname === link.href ||
+                      (link.href !== "/" && pathname.startsWith(link.href + "/")))
+                );
                 return (
                   <Link
                     key={link.href}
@@ -84,8 +87,11 @@ export function Header() {
         <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
           {navLinks.map((link) => {
             const Icon = link.icon;
-            const isActive =
-              pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+            const isActive = Boolean(
+              pathname &&
+                (pathname === link.href ||
+                  (link.href !== "/" && pathname.startsWith(link.href + "/")))
+            );
             return (
               <Link
                 key={link.href}

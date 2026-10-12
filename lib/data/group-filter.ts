@@ -25,8 +25,8 @@ export function isValidCohortGroup(group: string, allowTbd = false): boolean {
   return false;
 }
 
-export function parseGroupList(rawGroups: string): string[] {
-  if (!rawGroups || !rawGroups.trim()) {
+export function parseGroupList(rawGroups?: string | null): string[] {
+  if (!rawGroups || typeof rawGroups !== "string" || !rawGroups.trim()) {
     return ["ALL"];
   }
 
@@ -37,10 +37,16 @@ export function parseGroupList(rawGroups: string): string[] {
 }
 
 export function matchesStudentGroup(
-  itemGroups: string[] | string,
-  selectedGroup: StudentGroup
+  itemGroups?: string[] | string | null,
+  selectedGroup: StudentGroup = "ALL"
 ): boolean {
+  if (!itemGroups) {
+    return true;
+  }
   const groups = Array.isArray(itemGroups) ? itemGroups : parseGroupList(itemGroups);
+  if (groups.length === 0) {
+    return true;
+  }
 
   // If student is viewing all groups, everything matches
   if (selectedGroup === "ALL") {

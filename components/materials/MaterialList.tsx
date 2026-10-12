@@ -5,13 +5,13 @@ import { PublicMaterial } from "@/lib/data/schema";
 import { MaterialRow } from "./MaterialRow";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { StudentGroup, matchesStudentGroup } from "@/lib/data/group-filter";
-import { getStoredGroup } from "@/lib/storage/student-preferences";
+import { getStoredGroup, STORAGE_KEYS } from "@/lib/storage/student-preferences";
 
 interface MaterialListProps {
   materials: PublicMaterial[];
 }
 
-export function MaterialList({ materials }: MaterialListProps) {
+export function MaterialList({ materials = [] }: MaterialListProps) {
   const [userGroup, setUserGroup] = useState<StudentGroup>("ALL");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
 
@@ -21,16 +21,28 @@ export function MaterialList({ materials }: MaterialListProps) {
       const customEvent = e as CustomEvent<StudentGroup>;
       setUserGroup(customEvent.detail || getStoredGroup());
     };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.GROUP) {
+        setUserGroup(getStoredGroup());
+      }
+    };
     window.addEventListener("group-changed", handleGroupChange);
-    return () => window.removeEventListener("group-changed", handleGroupChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("group-changed", handleGroupChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
+  const safeMaterials = Array.isArray(materials) ? materials : [];
+
   // Filter materials by current student group
-  const groupFiltered = materials.filter((m) => matchesStudentGroup(m.groups, userGroup));
+  const groupFiltered = safeMaterials.filter((m) => m && matchesStudentGroup(m.groups || [], userGroup));
 
   // Determine available categories that actually have materials
   const categoryCounts = groupFiltered.reduce((acc, m) => {
-    acc[m.category] = (acc[m.category] || 0) + 1;
+    const cat = m.category || "OTHER";
+    acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
@@ -46,7 +58,7 @@ export function MaterialList({ materials }: MaterialListProps) {
   const displayedMaterials =
     selectedCategory === "ALL"
       ? groupFiltered
-      : groupFiltered.filter((m) => m.category === selectedCategory);
+      : groupFiltered.filter((m) => m && m.category === selectedCategory);
 
   return (
     <div className="space-y-4">

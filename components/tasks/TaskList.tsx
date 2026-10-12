@@ -11,6 +11,7 @@ import {
   getStoredCompletedTaskIds,
   toggleStoredCompletedTaskId,
   getStoredGroup,
+  STORAGE_KEYS,
 } from "@/lib/storage/student-preferences";
 import { isOverdueInCairo } from "@/lib/date/cairo";
 
@@ -22,8 +23,8 @@ interface TaskListProps {
 }
 
 export function TaskList({
-  tasks,
-  subjects,
+  tasks = [],
+  subjects = [],
   materials = [],
   initialSubject = "ALL",
 }: TaskListProps) {
@@ -43,21 +44,45 @@ export function TaskList({
       setUserGroup(customEvent.detail || getStoredGroup());
     };
 
+    const handleCompletedChange = () => {
+      setCompletedIds(getStoredCompletedTaskIds());
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.GROUP) {
+        setUserGroup(getStoredGroup());
+      } else if (e.key === STORAGE_KEYS.COMPLETED_TASK_IDS) {
+        setCompletedIds(getStoredCompletedTaskIds());
+      }
+    };
+
     window.addEventListener("group-changed", handleGroupChange);
-    return () => window.removeEventListener("group-changed", handleGroupChange);
+    window.addEventListener("tasks-completed-changed", handleCompletedChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("group-changed", handleGroupChange);
+      window.removeEventListener("tasks-completed-changed", handleCompletedChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   const handleToggleComplete = (taskId: string) => {
     toggleStoredCompletedTaskId(taskId);
     setCompletedIds(getStoredCompletedTaskIds());
+    window.dispatchEvent(new CustomEvent("tasks-completed-changed"));
   };
 
-  const subjectMap = new Map(subjects.map((s) => [s.subject_id, s]));
-  const materialMap = new Map(materials.map((m) => [m.material_id, m]));
+  const safeTasks = Array.isArray(tasks) ? tasks : [];
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
+  const safeMaterials = Array.isArray(materials) ? materials : [];
 
-  const filteredTasks = tasks.filter((task) => {
+  const subjectMap = new Map(safeSubjects.map((s) => [s.subject_id, s]));
+  const materialMap = new Map(safeMaterials.map((m) => [m.material_id, m]));
+
+  const filteredTasks = safeTasks.filter((task) => {
+    if (!task) return false;
     // 1. Group check
-    if (!matchesStudentGroup(task.groups, userGroup)) {
+    if (!matchesStudentGroup(task.groups || [], userGroup)) {
       return false;
     }
 
@@ -84,7 +109,7 @@ export function TaskList({
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       const subject = subjectMap.get(task.subject_id);
-      const matchesTitle = task.title.toLowerCase().includes(q);
+      const matchesTitle = (task.title || "").toLowerCase().includes(q);
       const matchesDesc = (task.description || "").toLowerCase().includes(q);
       const matchesSubject =
         (subject?.name_en || "").toLowerCase().includes(q) ||
@@ -110,16 +135,18 @@ export function TaskList({
       return aOverdue ? -1 : 1;
     }
 
-    if (a.due_date && !b.due_date) return -1;
-    if (!a.due_date && b.due_date) return 1;
+    const aHasDate = Boolean(a.due_date && a.due_date.trim());
+    const bHasDate = Boolean(b.due_date && b.due_date.trim());
+    if (aHasDate && !bHasDate) return -1;
+    if (!aHasDate && bHasDate) return 1;
 
-    if (a.due_date && b.due_date) {
-      const dComp = a.due_date.localeCompare(b.due_date);
+    if (aHasDate && bHasDate) {
+      const dComp = (a.due_date || "").trim().localeCompare((b.due_date || "").trim());
       if (dComp !== 0) return dComp;
-      return (a.due_time || "").localeCompare(b.due_time || "");
+      return (a.due_time || "").trim().localeCompare((b.due_time || "").trim());
     }
 
-    return a.task_id.localeCompare(b.task_id);
+    return (a.task_id || "").localeCompare(b.task_id || "");
   });
 
   return (
@@ -153,7 +180,8 @@ export function TaskList({
       ) : (
         <div className="grid gap-3">
           {sortedTasks.map((task) => {
-            const relMaterials = task.related_material_ids
+            if (!task) return null;
+            const relMaterials = (task.related_material_ids || [])
               .map((id) => materialMap.get(id))
               .filter((m): m is PublicMaterial => Boolean(m));
 

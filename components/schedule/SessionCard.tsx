@@ -10,10 +10,12 @@ interface SessionCardProps {
 }
 
 export function SessionCard({ session, subject }: SessionCardProps) {
+  if (!session) return null;
+
   const isCancelled = session.status === "CANCELLED";
   const isTentative = session.status === "TENTATIVE";
 
-  const getSessionTypeLabel = (type: string) => {
+  const getSessionTypeLabel = (type?: string) => {
     switch (type) {
       case "LECTURE":
         return "محاضرة";
@@ -27,6 +29,8 @@ export function SessionCard({ session, subject }: SessionCardProps) {
         return "جلسة";
     }
   };
+
+  const groups = Array.isArray(session.groups) ? session.groups : [];
 
   return (
     <div
@@ -47,7 +51,7 @@ export function SessionCard({ session, subject }: SessionCardProps) {
           <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
             {getSessionTypeLabel(session.session_type)}
           </span>
-          {session.groups.map((g) => (
+          {groups.map((g) => (
             <GroupBadge key={g} group={g} />
           ))}
         </div>

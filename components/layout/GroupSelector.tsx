@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { StudentGroup } from "@/lib/data/group-filter";
-import { getStoredGroup, setStoredGroup } from "@/lib/storage/student-preferences";
+import { getStoredGroup, setStoredGroup, STORAGE_KEYS } from "@/lib/storage/student-preferences";
 import { Users } from "lucide-react";
 
 interface GroupSelectorProps {
@@ -18,9 +18,26 @@ export function GroupSelector({ currentGroup, onGroupChange, compact = false }: 
     if (currentGroup) {
       setSelected(currentGroup);
     } else {
-      const stored = getStoredGroup();
-      setSelected(stored);
+      setSelected(getStoredGroup());
     }
+
+    const handleGroupChange = (e: Event) => {
+      const customEvent = e as CustomEvent<StudentGroup>;
+      setSelected(customEvent.detail || getStoredGroup());
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.GROUP) {
+        setSelected(getStoredGroup());
+      }
+    };
+
+    window.addEventListener("group-changed", handleGroupChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("group-changed", handleGroupChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, [currentGroup]);
 
   const handleChange = (newGroup: StudentGroup) => {

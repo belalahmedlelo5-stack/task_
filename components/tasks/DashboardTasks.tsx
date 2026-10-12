@@ -9,6 +9,7 @@ import {
   getStoredCompletedTaskIds,
   toggleStoredCompletedTaskId,
   getStoredGroup,
+  STORAGE_KEYS,
 } from "@/lib/storage/student-preferences";
 import { isOverdueInCairo } from "@/lib/date/cairo";
 import { AlertTriangle, Clock, HelpCircle, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
@@ -19,7 +20,7 @@ interface DashboardTasksProps {
   materials?: PublicMaterial[];
 }
 
-export function DashboardTasks({ tasks, subjects, materials = [] }: DashboardTasksProps) {
+export function DashboardTasks({ tasks = [], subjects = [], materials = [] }: DashboardTasksProps) {
   const [userGroup, setUserGroup] = useState<StudentGroup>("ALL");
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [showCompleted, setShowCompleted] = useState(false);
@@ -33,21 +34,44 @@ export function DashboardTasks({ tasks, subjects, materials = [] }: DashboardTas
       setUserGroup(customEvent.detail || getStoredGroup());
     };
 
+    const handleCompletedChange = () => {
+      setCompletedIds(getStoredCompletedTaskIds());
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.GROUP) {
+        setUserGroup(getStoredGroup());
+      } else if (e.key === STORAGE_KEYS.COMPLETED_TASK_IDS) {
+        setCompletedIds(getStoredCompletedTaskIds());
+      }
+    };
+
     window.addEventListener("group-changed", handleGroupChange);
-    return () => window.removeEventListener("group-changed", handleGroupChange);
+    window.addEventListener("tasks-completed-changed", handleCompletedChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("group-changed", handleGroupChange);
+      window.removeEventListener("tasks-completed-changed", handleCompletedChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   const handleToggleComplete = (taskId: string) => {
     toggleStoredCompletedTaskId(taskId);
     setCompletedIds(getStoredCompletedTaskIds());
+    window.dispatchEvent(new CustomEvent("tasks-completed-changed"));
   };
 
-  const subjectMap = new Map(subjects.map((s) => [s.subject_id, s]));
-  const materialMap = new Map(materials.map((m) => [m.material_id, m]));
+  const safeTasks = Array.isArray(tasks) ? tasks : [];
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
+  const safeMaterials = Array.isArray(materials) ? materials : [];
+
+  const subjectMap = new Map(safeSubjects.map((s) => [s.subject_id, s]));
+  const materialMap = new Map(safeMaterials.map((m) => [m.material_id, m]));
 
   // Strictly filter to OPEN tasks matching student cohort
-  const cohortOpenTasks = tasks.filter(
-    (t) => t.task_status === "OPEN" && matchesStudentGroup(t.groups, userGroup)
+  const cohortOpenTasks = safeTasks.filter(
+    (t) => t && t.task_status === "OPEN" && matchesStudentGroup(t.groups || [], userGroup)
   );
 
   // 1. Overdue tasks
@@ -64,7 +88,7 @@ export function DashboardTasks({ tasks, subjects, materials = [] }: DashboardTas
     .filter(
       (t) =>
         !completedIds.includes(t.task_id) &&
-        Boolean(t.due_date) &&
+        Boolean(t.due_date && t.due_date.trim()) &&
         !isOverdueInCairo(t.due_date, t.due_time)
     )
     .sort((a, b) => {
@@ -93,7 +117,8 @@ export function DashboardTasks({ tasks, subjects, materials = [] }: DashboardTas
   }
 
   const renderTask = (task: PublicTask) => {
-    const relMaterials = task.related_material_ids
+    if (!task) return null;
+    const relMaterials = (task.related_material_ids || [])
       .map((id) => materialMap.get(id))
       .filter((m): m is PublicMaterial => Boolean(m));
 

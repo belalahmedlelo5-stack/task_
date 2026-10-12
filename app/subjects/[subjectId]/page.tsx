@@ -22,8 +22,8 @@ export default async function SubjectDetailPage({ params }: SubjectDetailPagePro
     notFound();
   }
 
-  const subjectMaterials = materials.filter((m) => m.subject_id === subject.subject_id);
-  const subjectTasks = tasks.filter((t) => t.subject_id === subject.subject_id);
+  const subjectMaterials = materials.filter((m) => m && m.subject_id === subject.subject_id);
+  const subjectTasks = tasks.filter((t) => t && t.subject_id === subject.subject_id);
 
   return (
     <div className="space-y-8">

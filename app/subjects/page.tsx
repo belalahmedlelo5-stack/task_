@@ -26,8 +26,9 @@ export default async function SubjectsPage() {
       {/* Grid of Subjects */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {subjects.map((subject) => {
-          const subjectMaterials = materials.filter((m) => m.subject_id === subject.subject_id);
-          const subjectTasks = tasks.filter((t) => t.subject_id === subject.subject_id);
+          if (!subject) return null;
+          const subjectMaterials = materials.filter((m) => m && m.subject_id === subject.subject_id);
+          const subjectTasks = tasks.filter((t) => t && t.subject_id === subject.subject_id);
 
           return (
             <Link

@@ -5,7 +5,7 @@ import { PublicSession, Subject } from "@/lib/data/schema";
 import { SessionCard } from "./SessionCard";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { StudentGroup, matchesStudentGroup } from "@/lib/data/group-filter";
-import { getStoredGroup } from "@/lib/storage/student-preferences";
+import { getStoredGroup, STORAGE_KEYS } from "@/lib/storage/student-preferences";
 import { Info } from "lucide-react";
 
 interface ScheduleViewProps {
@@ -13,7 +13,7 @@ interface ScheduleViewProps {
   subjects: Subject[];
 }
 
-export function ScheduleView({ sessions, subjects }: ScheduleViewProps) {
+export function ScheduleView({ sessions = [], subjects = [] }: ScheduleViewProps) {
   const [userGroup, setUserGroup] = useState<StudentGroup>("ALL");
 
   useEffect(() => {
@@ -22,14 +22,26 @@ export function ScheduleView({ sessions, subjects }: ScheduleViewProps) {
       const customEvent = e as CustomEvent<StudentGroup>;
       setUserGroup(customEvent.detail || getStoredGroup());
     };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.GROUP) {
+        setUserGroup(getStoredGroup());
+      }
+    };
     window.addEventListener("group-changed", handleGroupChange);
-    return () => window.removeEventListener("group-changed", handleGroupChange);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("group-changed", handleGroupChange);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
-  const subjectMap = new Map(subjects.map((s) => [s.subject_id, s]));
+  const safeSessions = Array.isArray(sessions) ? sessions : [];
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
 
-  const filteredSessions = sessions.filter((session) =>
-    matchesStudentGroup(session.groups, userGroup)
+  const subjectMap = new Map(safeSubjects.map((s) => [s.subject_id, s]));
+
+  const filteredSessions = safeSessions.filter((session) =>
+    session && matchesStudentGroup(session.groups || [], userGroup)
   );
 
   return (
@@ -52,13 +64,16 @@ export function ScheduleView({ sessions, subjects }: ScheduleViewProps) {
         />
       ) : (
         <div className="grid gap-3">
-          {filteredSessions.map((session) => (
-            <SessionCard
-              key={session.session_id}
-              session={session}
-              subject={subjectMap.get(session.subject_id)}
-            />
-          ))}
+          {filteredSessions.map((session) => {
+            if (!session) return null;
+            return (
+              <SessionCard
+                key={session.session_id}
+                session={session}
+                subject={subjectMap.get(session.subject_id)}
+              />
+            );
+          })}
         </div>
       )}
     </div>

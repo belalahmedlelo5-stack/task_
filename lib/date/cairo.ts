@@ -16,33 +16,45 @@ export function getCairoNowParts(now: Date = new Date()): {
   minute: number;
   second: number;
 } {
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: CAIRO_TIMEZONE,
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false,
-  });
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: CAIRO_TIMEZONE,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
 
-  const parts = formatter.formatToParts(now);
-  const partMap: Record<string, number> = {};
-  for (const part of parts) {
-    if (part.type !== "literal") {
-      partMap[part.type] = parseInt(part.value, 10);
+    const parts = formatter.formatToParts(now);
+    const partMap: Record<string, number> = {};
+    for (const part of parts) {
+      if (part.type !== "literal") {
+        partMap[part.type] = parseInt(part.value, 10);
+      }
     }
-  }
 
-  return {
-    year: partMap.year || now.getFullYear(),
-    month: partMap.month || now.getMonth() + 1,
-    day: partMap.day || now.getDate(),
-    hour: partMap.hour === 24 ? 0 : (partMap.hour || 0),
-    minute: partMap.minute || 0,
-    second: partMap.second || 0,
-  };
+    return {
+      year: partMap.year || now.getFullYear(),
+      month: partMap.month || now.getMonth() + 1,
+      day: partMap.day || now.getDate(),
+      hour: partMap.hour === 24 ? 0 : (partMap.hour || 0),
+      minute: partMap.minute || 0,
+      second: partMap.second || 0,
+    };
+  } catch {
+    // Fallback if Intl or Africa/Cairo timezone is unsupported in browser runtime
+    return {
+      year: now.getUTCFullYear(),
+      month: now.getUTCMonth() + 1,
+      day: now.getUTCDate(),
+      hour: (now.getUTCHours() + 2) % 24,
+      minute: now.getUTCMinutes(),
+      second: now.getUTCSeconds(),
+    };
+  }
 }
 
 /**
@@ -56,7 +68,7 @@ export function isOverdueInCairo(
   dueTime?: string | null,
   now: Date = new Date()
 ): boolean {
-  if (!dueDate || !dueDate.trim()) {
+  if (!dueDate || typeof dueDate !== "string" || !dueDate.trim()) {
     return false;
   }
 
@@ -73,7 +85,7 @@ export function isOverdueInCairo(
   let dueMinute = 59;
   let dueSecond = 59;
 
-  if (dueTime && dueTime.trim()) {
+  if (dueTime && typeof dueTime === "string" && dueTime.trim()) {
     const timeMatch = dueTime.trim().match(/^(\d{1,2}):(\d{2})$/);
     if (timeMatch) {
       dueHour = parseInt(timeMatch[1], 10);
@@ -106,7 +118,7 @@ export function isOverdueInCairo(
  * Formats a Cairo deadline for human display.
  */
 export function formatCairoDeadline(dueDate?: string | null, dueTime?: string | null): string {
-  if (!dueDate || !dueDate.trim()) {
+  if (!dueDate || typeof dueDate !== "string" || !dueDate.trim()) {
     return "لم يُحدد بعد";
   }
 
@@ -115,7 +127,7 @@ export function formatCairoDeadline(dueDate?: string | null, dueTime?: string | 
 
   const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-  if (dueTime && dueTime.trim()) {
+  if (dueTime && typeof dueTime === "string" && dueTime.trim()) {
     return `${formattedDate} الساعة ${dueTime.trim()}`;
   }
 
@@ -125,8 +137,8 @@ export function formatCairoDeadline(dueDate?: string | null, dueTime?: string | 
 /**
  * Formats date for sessions
  */
-export function formatCairoSessionDate(dateStr: string): string {
-  if (!dateStr || !dateStr.trim()) return "—";
+export function formatCairoSessionDate(dateStr?: string | null): string {
+  if (!dateStr || typeof dateStr !== "string" || !dateStr.trim()) return "—";
   const parts = dateStr.trim().split("-");
   if (parts.length !== 3) return dateStr;
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
