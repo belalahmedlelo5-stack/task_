@@ -1,1 +1,32 @@
 session_id,subject_id,session_type,session_date,start_time,end_time,groups,location,note,status
+ses-0001,stem-cell-biology,LAB,2026-10-12,08:45,10:25,A,Lab 1,م.د/ ريهام محمود,SCHEDULED
+ses-0002,industry-bacterial-biotechnology,LAB,2026-10-12,08:45,10:25,B,Lab 8,م/ منة مرجان,SCHEDULED
+ses-0003,stem-cell-biology,LECTURE,2026-10-12,10:30,11:20,ALL,قاعة 2029,أ.د/ سها أحمد ، م.م/ سلمى زاهر,SCHEDULED
+ses-0004,drug-monitoring,LECTURE,2026-10-12,11:20,12:10,ALL,قاعة 2029,أ.د/ محمد عبد الله,SCHEDULED
+ses-0005,stem-cell-biology,LAB,2026-10-12,12:30,14:10,B,Lab 1,م.م/ سلمى زاهر,SCHEDULED
+ses-0006,drug-monitoring,LAB,2026-10-12,12:30,14:10,C,Lab 1H0,م/ ندى الليثي,SCHEDULED
+ses-0007,stem-cell-biology,LAB,2026-10-12,14:15,15:55,C,Lab 1,م.م/ سلمى زاهر ، م/ آية سلام,SCHEDULED
+ses-0008,drug-monitoring,LAB,2026-10-12,14:15,15:55,A,Lab 1H0,م/ ندى الليثي,SCHEDULED
+ses-0009,communication-cell-signaling,TUTORIAL,2026-10-13,08:45,10:25,ALL,TUT 6119,م/ مريم إبراهيم,SCHEDULED
+ses-0010,industry-bacterial-biotechnology,TUTORIAL,2026-10-13,08:45,10:25,ALL,TUT 1110,م.م/ عبير صلاح,SCHEDULED
+ses-0011,recombinant-dna-technology,LECTURE,2026-10-13,10:30,11:20,ALL,قاعة 2029,أ.د/ سمر حسب الله,SCHEDULED
+ses-0012,gene-therapy,LAB,2026-10-13,12:30,14:10,A,Lab 1,م.م/ ندى الليثي,SCHEDULED
+ses-0013,recombinant-dna-technology,LAB,2026-10-13,12:30,14:10,B,Lab 2,م/ ريهام محمود,SCHEDULED
+ses-0014,microbial-genetics,LAB,2026-10-13,14:15,15:55,A,Lab 2,م.م/ عبير صلاح,SCHEDULED
+ses-0015,drug-monitoring,LAB,2026-10-13,14:15,15:55,B,Lab 1H0,م/ ندى الليثي,SCHEDULED
+ses-0016,gene-therapy,LECTURE,2026-10-14,08:45,09:35,ALL,قاعة 2029,أ.د/ تامر رشدي,SCHEDULED
+ses-0017,communication-cell-signaling,LECTURE,2026-10-14,09:35,10:25,ALL,قاعة 4111,أ.د/ سمر حسب الله,SCHEDULED
+ses-0018,microbial-genetics,LECTURE,2026-10-14,10:30,11:20,ALL,قاعة 2029,أ.د/ مروة صلاح,SCHEDULED
+ses-0019,industry-bacterial-biotechnology,LECTURE,2026-10-14,11:20,12:10,ALL,قاعة 2029,أ.د/ مروة صلاح,SCHEDULED
+ses-0020,gene-therapy,LAB,2026-10-14,12:30,14:10,C,Lab 1110,م.م/ ندى الليثي,SCHEDULED
+ses-0021,microbial-genetics,LAB,2026-10-14,12:30,14:10,B,Lab 2,أ.د/ مروة صلاح ، م/ حنين خالد,SCHEDULED
+ses-0022,gene-therapy,LAB,2026-10-14,14:15,15:55,B,Lab 1110,م.م/ ندى الليثي,SCHEDULED
+ses-0023,microbial-genetics,LAB,2026-10-14,14:15,15:55,C,Lab 2,أ.د/ مروة صلاح ، م/ حنين خالد,SCHEDULED
+ses-0024,stem-cell-biology,TUTORIAL,2026-10-15,08:45,10:25,ALL,TUT lab 2,م.م/ ريهام محمود,SCHEDULED
+ses-0025,gene-therapy,TUTORIAL,2026-10-15,08:45,10:25,ALL,TUT 6119,م.م/ ندى الليثي,SCHEDULED
+ses-0026,recombinant-dna-technology,LAB,2026-10-15,10:30,12:10,C,Lab 1,م.م/ ريهام محمود,SCHEDULED
+ses-0027,industry-bacterial-biotechnology,LAB,2026-10-15,10:30,12:10,A,Lab 8,م.م/ عبير صلاح,SCHEDULED
+ses-0028,recombinant-dna-technology,LAB,2026-10-15,12:30,14:10,A,Lab 1,م.م/ ريهام محمود,SCHEDULED
+ses-0029,industry-bacterial-biotechnology,LAB,2026-10-15,12:30,14:10,B,Lab 8,م.م/ عبير صلاح,SCHEDULED
+ses-0030,recombinant-dna-technology,TUTORIAL,2026-10-15,14:15,15:55,ALL,TUT lab 1,م.م/ ريهام محمود,SCHEDULED
+ses-0031,stem-cell-biology,OTHER,2026-10-18,09:00,14:00,ALL,مستشفيات ومراكز التدريب,التدريب الميداني (Training),SCHEDULED
