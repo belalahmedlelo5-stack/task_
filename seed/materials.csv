@@ -1,38 +1,92 @@
-subject_name,drive_url,title,category,course_code,notes,subject_id,material_id,status
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/drive/folders/17LwiR5Hcn0LNt0z6sr3I4ESx_lMPUGnI,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBSCB403,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,stem-cell-biology,mat-0001,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/drive/folders/1SbY-DIrXVeSmGnGchRjzWFpOOK4CkFiW,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,EBDM151,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,drug-monitoring,mat-0002,PUBLISHED
-03 - Microbial Genetics | وراثة ميكروبية,https://drive.google.com/drive/folders/1BNEc8nuLpXa9iJWj5N_HAaikdkGmKihN,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBMG310,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,microbial-genetics,mat-0003,PUBLISHED
-04 - Gene Therapy | علاج جيني,https://drive.google.com/drive/folders/1KKNHzeCcmiQANc5JyHGNwCsBK_6By9-5,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBGT309,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,gene-therapy,mat-0004,PUBLISHED
-05 - Recombinant DNA Technology | تكنولوجيا الـ DNA معاد الاتحاد,https://drive.google.com/drive/folders/1VWoitSqks-N0K4mSGptclUtxizj0eERV,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBBMBR213,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,recombinant-dna-technology,mat-0005,PUBLISHED
-06 - Communication and Cell Signaling | الاتصال والإشارات الخلوية,https://drive.google.com/drive/folders/1JcSFtPCTUqUigGPvZmy8rN59B7eUW1-c,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBCCS410,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,communication-cell-signaling,mat-0006,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/drive/folders/1CHQ9ursSxe3UBq6MLpEMm0tV42KbfJHx,مجلد المادة الشامل (فولدر كل المحاضرات والسكاشن),FOLDER,MBIBB313,رابط فولدر درايف الرئيسي لرفع وتحميل كل ملفات المادة,industry-bacterial-biotechnology,mat-0007,PUBLISHED
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/file/d/1MeDIh3F6xM0k_9WtF9f3MgepvD0sPRz9/view,Fertilization and Early Embryonic Development,LECTURE,MBSCB403,Needs human confirmation of affiliation to Stem Cell Biology,stem-cell-biology,mat-0008,PUBLISHED
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/file/d/1LoNKFdsg7wVE2fvzUATvjYOwS-3Dxhby/view,Stem Cell Biology Section 3 (Topic A),SECTION,MBSCB403,Section 3 Topic A; distinct from mat-0004,stem-cell-biology,mat-0009,PUBLISHED
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/file/d/1kZDgRlzzQf5-6vxUZ6ueDFZC2VaidPxS/view,Stem Cell Biology Section 2,SECTION,MBSCB403,Section 2 practical slides,stem-cell-biology,mat-0010,PUBLISHED
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/file/d/14Oz3Y2dbLtZFGFf0ztcIR6kv4x-zLuu_/view,Stem Cell Section 3 (Topic B),SECTION,MBSCB403,Section 3 Topic B; distinct from mat-0002,stem-cell-biology,mat-0011,PUBLISHED
-01 - Stem Cell Biology | بيولوجيا الخلايا الجذعية,https://drive.google.com/file/d/1NUE2ekzbRqUp0_7wvodVPCaFdh0SGoMg/view,Stem Cell Lab Safety (Lab 1),SECTION,MBSCB403,Lab 1 safety slides,stem-cell-biology,mat-0012,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/file/d/1y30NCXYBaNpB4CJqhbw8eReFSwJCVwQJ/view,Drug Monitoring Lecture 2 (Slides),LECTURE,EBDM151,Lecture 2 PPTX,drug-monitoring,mat-0013,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/file/d/1BtwinMIMhzA6kxgSkkyxt_AvC7gVgj0a/view,Drug Monitoring Lectures 1 & 2 Questions,QUESTIONS,EBDM151,Revision and practice questions,drug-monitoring,mat-0014,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/file/d/1SU6WisVi-s07eVCNfDe4BF2NtZMlZmqm/view,Therapeutic Drug Monitoring Lecture 1,LECTURE,EBDM151,Lecture 1 PDF,drug-monitoring,mat-0015,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/file/d/1NUrdtVMfREFKOKCy4WtXm032gT6TqEmE/view,Therapeutic Drug Monitoring Lecture 2,LECTURE,EBDM151,Lecture 2 PDF,drug-monitoring,mat-0016,PUBLISHED
-02 - Drug Monitoring | مراقبة الدواء,https://drive.google.com/file/d/1LEbNdgcSCUZQDlRRl_Nh4atSODHvQk7V/view,Drug Monitoring Lecture 1 (Slides),LECTURE,EBDM151,Lecture 1 PPTX,drug-monitoring,mat-0017,PUBLISHED
-04 - Gene Therapy | علاج جيني,https://drive.google.com/file/d/1qF8nLX6g7SSdmfKcsy7hL77GzITTY7ZC/view,Gene Therapy Lecture 1 (MBGT309),LECTURE,MBGT309,Lecture 1 PDF,gene-therapy,mat-0018,PUBLISHED
-04 - Gene Therapy | علاج جيني,https://drive.google.com/file/d/1lHLxd47IzD4G-HLcfQoQLKGXtg5aQjh9/view,Gene Therapy Lecture 2 (MBGT309),LECTURE,MBGT309,Lecture 2 PDF,gene-therapy,mat-0019,PUBLISHED
-04 - Gene Therapy | علاج جيني,https://drive.google.com/file/d/17hIxV2fc3myNs6sjiSbMOLh30dt38cni/view,Gene Therapy Lecture 3 (MBGT309),LECTURE,MBGT309,Lecture 3 PDF,gene-therapy,mat-0020,PUBLISHED
-04 - Gene Therapy | علاج جيني,https://drive.google.com/file/d/1goMn8s7YNsvWoE1LMz_JlxK-cNyyt4DJ/view,Gene Therapy Lecture 1 (Slides),LECTURE,MBGT309,Lecture 1 PPTX,gene-therapy,mat-0021,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/1U_kpapyD-hIaCO_PM88FRTGDvIPWuLik/view,Industrial Lecture 1 - Bacterial Growth,LECTURE,MBIBB313,Lecture 1 PDF,industry-bacterial-biotechnology,mat-0022,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/11zbTPfUC74vkTuLhYWxAjHXiAkRkTwhy/view,Industrial Lecture 2 - Factors Affecting Bacterial Growth,LECTURE,MBIBB313,Lecture 2 PDF,industry-bacterial-biotechnology,mat-0023,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/1De5LqpABIo_GgqpTiw02zo5qFGiXUBUB/view,Industrial Lecture 3 - Bacterial Metabolism,LECTURE,MBIBB313,Lecture 3 PDF,industry-bacterial-biotechnology,mat-0024,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/1obIbEFHnF3bASFOtVexR18LEjofqVJxY/view,Industrial & Microbial Genetics Section 3,SECTION,MBIBB313,Section 3 practical,industry-bacterial-biotechnology,mat-0025,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/1MuQpal6om5U66-BDAqOPpnlbsbyyPFYe/view,Industrial & Microbial Genetics Section 1,SECTION,MBIBB313,Section 1 practical,industry-bacterial-biotechnology,mat-0026,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/1FXZEA0Gb9xtHbo7DP_VmxkTXuhGDeXJ2/view,Industrial & Microbial Genetics Section 2 (Variant A),SECTION,MBIBB313,Section 2 practical 652KB,industry-bacterial-biotechnology,mat-0027,PUBLISHED
-07 - Industry and Bacterial Biotechnology | التكنولوجيا الحيوية البكتيرية والصناعية,https://drive.google.com/file/d/14lFGVCQ8bgxcC1KB9J1OLq2hskojlpK1/view,Industrial & Microbial Genetics Section 2 (Variant B),SECTION,MBIBB313,Section 2 practical 83KB,industry-bacterial-biotechnology,mat-0028,PUBLISHED
-03 - Microbial Genetics | وراثة ميكروبية,https://drive.google.com/file/d/1VCvIn8oPgPnqgDmTVhUF2KkpsHSXSKSM/view,Microbial Genetics Lecture 3 - Genetic Material & Replication,LECTURE,MBMG310,Lecture 3 PDF,microbial-genetics,mat-0029,PUBLISHED
-03 - Microbial Genetics | وراثة ميكروبية,https://drive.google.com/file/d/1sMnIXoGVhhzxjIkszovvF9wYIb61gALM/view,Microbial Genetics Lecture 2 - Microbial Structure,LECTURE,MBMG310,Lecture 2 PDF,microbial-genetics,mat-0030,PUBLISHED
-03 - Microbial Genetics | وراثة ميكروبية,https://drive.google.com/file/d/1p-21r6kyRPYAweqSLUfBsbKtOAfxuPgD/view,Microbial Genetics Lecture 1 - Microbial Diversity,LECTURE,MBMG310,Lecture 1 PDF,microbial-genetics,mat-0031,PUBLISHED
-05 - Recombinant DNA Technology | تكنولوجيا الـ DNA معاد الاتحاد,https://drive.google.com/file/d/1on8LttDZDnxbH750CgquyuAnm6LsOPs7/view,Recombinant DNA Lectures 1 & 2 Supplement,SUPPLEMENT,MBBMBR213,Supplement docx,recombinant-dna-technology,mat-0032,PUBLISHED
-05 - Recombinant DNA Technology | تكنولوجيا الـ DNA معاد الاتحاد,https://drive.google.com/file/d/1x_8Teniq_aMqujIg6VbMXm33BhvEKA0M/view,Teaching Map for Recombinant DNA Technology,SUPPLEMENT,MBBMBR213,Course syllabus map,recombinant-dna-technology,mat-0033,PUBLISHED
-05 - Recombinant DNA Technology | تكنولوجيا الـ DNA معاد الاتحاد,https://drive.google.com/file/d/15zxmfzxlAfChAyoSynh_JryRzGWRHYeX/view,Recombinant DNA Technology Lecture 1 (Slides),LECTURE,MBBMBR213,Lecture 1 PPTX,recombinant-dna-technology,mat-0034,PUBLISHED
-06 - Communication and Cell Signaling | الاتصال والإشارات الخلوية,https://drive.google.com/file/d/1q5tE7oDg_p5X0oOsDZJrKHpKNkUzxaCD/view,Cell Signaling Presentation 1,LECTURE,MBCCS410,Requires title and topic verification,communication-cell-signaling,mat-0035,PUBLISHED
-06 - Communication and Cell Signaling | الاتصال والإشارات الخلوية,https://drive.google.com/file/d/1kQOFkT7g5bp7VZ6MwgKljw6w_Ce-s6ke/view,Cell Signaling Presentation 4,LECTURE,MBCCS410,Requires title and topic verification,communication-cell-signaling,mat-0036,PUBLISHED
-06 - Communication and Cell Signaling | الاتصال والإشارات الخلوية,https://drive.google.com/file/d/1h4CzJlrYINXp17VRuRX-r_kzAhLpHXi9/view,Cell Signaling Lectures 2 & 3 (Modified),LECTURE,MBCCS410,Lectures 2 & 3 PDF,communication-cell-signaling,mat-0037,PUBLISHED
+اسم المادة (Subject),نوع ومحتوى الملف (محاضرة / سكشن),رابط درايف (Drive Link)
+📁 01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/17LwiR5Hcn0LNt0z6sr3I4ESx_lMPUGnI
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),محاضرة: Fertilization and Early Embryonic Development,https://drive.google.com/file/d/1MeDIh3F6xM0k_9WtF9f3MgepvD0sPRz9/view
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),سكشن: Stem Cell Biology Section 3 (Topic A),https://drive.google.com/file/d/1LoNKFdsg7wVE2fvzUATvjYOwS-3Dxhby/view
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),سكشن: Stem Cell Biology Section 2,https://drive.google.com/file/d/1kZDgRlzzQf5-6vxUZ6ueDFZC2VaidPxS/view
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),سكشن: Stem Cell Section 3 (Topic B),https://drive.google.com/file/d/14Oz3Y2dbLtZFGFf0ztcIR6kv4x-zLuu_/view
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),سكشن: Stem Cell Lab Safety (Lab 1),https://drive.google.com/file/d/1NUE2ekzbRqUp0_7wvodVPCaFdh0SGoMg/view
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+01 - Stem Cell Biology (بيولوجيا الخلايا الجذعية),,
+📁 02 - Drug Monitoring (مراقبة الدواء),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1SbY-DIrXVeSmGnGchRjzWFpOOK4CkFiW
+02 - Drug Monitoring (مراقبة الدواء),محاضرة: Drug Monitoring Lecture 2 (Slides),https://drive.google.com/file/d/1y30NCXYBaNpB4CJqhbw8eReFSwJCVwQJ/view
+02 - Drug Monitoring (مراقبة الدواء),أسئلة: Drug Monitoring Lectures 1 & 2 Questions,https://drive.google.com/file/d/1BtwinMIMhzA6kxgSkkyxt_AvC7gVgj0a/view
+02 - Drug Monitoring (مراقبة الدواء),محاضرة: Therapeutic Drug Monitoring Lecture 1,https://drive.google.com/file/d/1SU6WisVi-s07eVCNfDe4BF2NtZMlZmqm/view
+02 - Drug Monitoring (مراقبة الدواء),محاضرة: Therapeutic Drug Monitoring Lecture 2,https://drive.google.com/file/d/1NUrdtVMfREFKOKCy4WtXm032gT6TqEmE/view
+02 - Drug Monitoring (مراقبة الدواء),محاضرة: Drug Monitoring Lecture 1 (Slides),https://drive.google.com/file/d/1LEbNdgcSCUZQDlRRl_Nh4atSODHvQk7V/view
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+02 - Drug Monitoring (مراقبة الدواء),,
+📁 03 - Microbial Genetics (وراثة ميكروبية),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1BNEc8nuLpXa9iJWj5N_HAaikdkGmKihN
+03 - Microbial Genetics (وراثة ميكروبية),محاضرة: Microbial Genetics Lecture 3 - Genetic Material & Replication,https://drive.google.com/file/d/1VCvIn8oPgPnqgDmTVhUF2KkpsHSXSKSM/view
+03 - Microbial Genetics (وراثة ميكروبية),محاضرة: Microbial Genetics Lecture 2 - Microbial Structure,https://drive.google.com/file/d/1sMnIXoGVhhzxjIkszovvF9wYIb61gALM/view
+03 - Microbial Genetics (وراثة ميكروبية),محاضرة: Microbial Genetics Lecture 1 - Microbial Diversity,https://drive.google.com/file/d/1p-21r6kyRPYAweqSLUfBsbKtOAfxuPgD/view
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+03 - Microbial Genetics (وراثة ميكروبية),,
+📁 04 - Gene Therapy (علاج جيني),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1KKNHzeCcmiQANc5JyHGNwCsBK_6By9-5
+04 - Gene Therapy (علاج جيني),محاضرة: Gene Therapy Lecture 1 (MBGT309),https://drive.google.com/file/d/1qF8nLX6g7SSdmfKcsy7hL77GzITTY7ZC/view
+04 - Gene Therapy (علاج جيني),محاضرة: Gene Therapy Lecture 2 (MBGT309),https://drive.google.com/file/d/1lHLxd47IzD4G-HLcfQoQLKGXtg5aQjh9/view
+04 - Gene Therapy (علاج جيني),محاضرة: Gene Therapy Lecture 3 (MBGT309),https://drive.google.com/file/d/17hIxV2fc3myNs6sjiSbMOLh30dt38cni/view
+04 - Gene Therapy (علاج جيني),محاضرة: Gene Therapy Lecture 1 (Slides),https://drive.google.com/file/d/1goMn8s7YNsvWoE1LMz_JlxK-cNyyt4DJ/view
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+04 - Gene Therapy (علاج جيني),,
+📁 05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1VWoitSqks-N0K4mSGptclUtxizj0eERV
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),ملف إضافي: Recombinant DNA Lectures 1 & 2 Supplement,https://drive.google.com/file/d/1on8LttDZDnxbH750CgquyuAnm6LsOPs7/view
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),ملف إضافي: Teaching Map for Recombinant DNA Technology,https://drive.google.com/file/d/1x_8Teniq_aMqujIg6VbMXm33BhvEKA0M/view
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),محاضرة: Recombinant DNA Technology Lecture 1 (Slides),https://drive.google.com/file/d/15zxmfzxlAfChAyoSynh_JryRzGWRHYeX/view
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+05 - Recombinant DNA Technology (تكنولوجيا الـ DNA معاد الاتحاد),,
+📁 06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1JcSFtPCTUqUigGPvZmy8rN59B7eUW1-c
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),محاضرة: Cell Signaling Presentation 1,https://drive.google.com/file/d/1q5tE7oDg_p5X0oOsDZJrKHpKNkUzxaCD/view
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),محاضرة: Cell Signaling Presentation 4,https://drive.google.com/file/d/1kQOFkT7g5bp7VZ6MwgKljw6w_Ce-s6ke/view
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),محاضرة: Cell Signaling Lectures 2 & 3 (Modified),https://drive.google.com/file/d/1h4CzJlrYINXp17VRuRX-r_kzAhLpHXi9/view
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+06 - Communication and Cell Signaling (الاتصال والإشارات الخلوية),,
+📁 07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),مجلد المادة الشامل على جوجل درايف,https://drive.google.com/drive/folders/1CHQ9ursSxe3UBq6MLpEMm0tV42KbfJHx
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),محاضرة: Industrial Lecture 1 - Bacterial Growth,https://drive.google.com/file/d/1U_kpapyD-hIaCO_PM88FRTGDvIPWuLik/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),محاضرة: Industrial Lecture 2 - Factors Affecting Bacterial Growth,https://drive.google.com/file/d/11zbTPfUC74vkTuLhYWxAjHXiAkRkTwhy/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),محاضرة: Industrial Lecture 3 - Bacterial Metabolism,https://drive.google.com/file/d/1De5LqpABIo_GgqpTiw02zo5qFGiXUBUB/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),سكشن: Industrial & Microbial Genetics Section 3,https://drive.google.com/file/d/1obIbEFHnF3bASFOtVexR18LEjofqVJxY/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),سكشن: Industrial & Microbial Genetics Section 1,https://drive.google.com/file/d/1MuQpal6om5U66-BDAqOPpnlbsbyyPFYe/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),سكشن: Industrial & Microbial Genetics Section 2 (Variant A),https://drive.google.com/file/d/1FXZEA0Gb9xtHbo7DP_VmxkTXuhGDeXJ2/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),سكشن: Industrial & Microbial Genetics Section 2 (Variant B),https://drive.google.com/file/d/14lFGVCQ8bgxcC1KB9J1OLq2hskojlpK1/view
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),,
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),,
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),,
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),,
+07 - Industry and Bacterial Biotechnology (التكنولوجيا الحيوية البكتيرية والصناعية),,

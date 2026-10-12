@@ -132,16 +132,31 @@ export function normalizeMaterials(
   const errors: Array<{ tab: string; id: string; reason: string }> = [];
   const seenIds = new Set<string>();
   let autoIdCounter = 1;
+  let currentSubjectId = "";
 
   for (const row of rawRows) {
-    const driveUrl = getField(row, "drive_url", "drive", "url", "رابط");
-    const rawTitle = getField(row, "title", "name", "عنوان", "اسم المحتوى");
-    const subjectName = getField(row, "subject_name", "subject", "اسم المادة");
+    const driveUrl = getField(row, "drive_url", "drive", "url", "رابط", "لينك");
+    const rawTitle = getField(row, "title", "name", "عنوان", "اسم المحتوى", "نوع ومحتوى الملف", "نوع أو عنوان المحتوى", "نوع / عنوان", "محتوى", "نوع");
+    const rawSub = getField(row, "subject_name", "subject", "المادة", "اسم المادة", "مادة");
+    const rawSubDirect = sanitizeText(String(row.subject_id || ""));
 
-    // Skip completely empty rows
-    if (!driveUrl && !rawTitle && !row.subject_id && !subjectName) {
+    // Track current subject from row or header
+    const resolvedFromRow = resolveSubjectId(row, validSubjectIds);
+    if (resolvedFromRow && validSubjectIds.has(resolvedFromRow)) {
+      currentSubjectId = resolvedFromRow;
+    }
+
+    // Skip empty placeholder slots or separator rows without drive URL
+    if (!driveUrl && !rawTitle && !rawSubDirect && !rawSub) {
       continue;
     }
+
+    // If it's a template placeholder row where admin hasn't put a link yet, skip cleanly
+    if (!driveUrl || !driveUrl.trim()) {
+      continue;
+    }
+
+    const resolvedSub = resolvedFromRow || rawSubDirect || currentSubjectId;
 
     let rawId = getField(row, "material_id", "id");
     if (!rawId) {
@@ -152,35 +167,54 @@ export function normalizeMaterials(
       rawId = `mat-${String(autoIdCounter++).padStart(4, "0")}`;
     }
 
-    const resolvedSub = resolveSubjectId(row, validSubjectIds) || sanitizeText(String(row.subject_id || ""));
-
-    let category = getField(row, "category", "نوع", "تصنيف").toUpperCase();
+    let category = getField(row, "category", "تصنيف").toUpperCase();
     if (!category || !["FOLDER", "LECTURE", "SECTION", "TUTORIAL", "QUESTIONS", "SUPPLEMENT", "OTHER"].includes(category)) {
       const lowerTitle = rawTitle.toLowerCase();
-      if (driveUrl.includes("/folders/") || lowerTitle.includes("فولدر") || lowerTitle.includes("مجلد") || lowerTitle.includes("folder")) {
+      const lowerUrl = driveUrl.toLowerCase();
+      if (lowerUrl.includes("/folders/") || lowerTitle.includes("فولدر") || lowerTitle.includes("مجلد") || lowerTitle.includes("folder")) {
         category = "FOLDER";
+      } else if (lowerTitle.includes("سكشن") || lowerTitle.includes("sec") || lowerTitle.includes("معمل") || lowerTitle.includes("lab")) {
+        category = "SECTION";
+      } else if (lowerTitle.includes("توتور") || lowerTitle.includes("tut")) {
+        category = "TUTORIAL";
+      } else if (lowerTitle.includes("أسئلة") || lowerTitle.includes("questions") || lowerTitle.includes("q&a")) {
+        category = "QUESTIONS";
+      } else if (lowerTitle.includes("إضافي") || lowerTitle.includes("supplement")) {
+        category = "SUPPLEMENT";
       } else {
         category = "LECTURE";
       }
     }
 
     const addedOn = normalizeDate(getField(row, "added_on", "تاريخ")) || "2026-10-12";
-    const status = getField(row, "status", "حالة").toUpperCase() || "PUBLISHED";
-    const notes = getField(row, "notes", "ملاحظات", "note");
-    const groups = getField(row, "groups", "جروب") || "ALL";
+    let rawGroups = getField(row, "groups", "جروب");
+    if (!rawGroups) {
+      const detected: string[] = [];
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Aaأ]|[\(\[\{]\s*[Aaأ]\s*[\)\]\}]/i.test(rawTitle)) detected.push("A");
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Bbب]|[\(\[\{]\s*[Bbب]\s*[\)\]\}]/i.test(rawTitle)) detected.push("B");
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Ccج]|[\(\[\{]\s*[Ccج]\s*[\)\]\}]/i.test(rawTitle)) detected.push("C");
+      rawGroups = detected.length > 0 ? detected.join(",") : "ALL";
+    }
+
+    const parsedGroups = parseGroupList(rawGroups);
+
+    // Sequence number extraction if present
+    const seqMatch = rawTitle.match(/\b([1-9]|1[0-2])\b/);
+    const seqNo = row.sequence_no ? Number(row.sequence_no) : (seqMatch ? parseInt(seqMatch[1], 10) : null);
+    const title = rawTitle || (category === "FOLDER" ? "مجلد داتا المادة الشامل" : `ملف مادة ${resolvedSub}`);
 
     const rawParsed = RawMaterialSchema.safeParse({
       material_id: rawId,
       subject_id: resolvedSub,
       category,
-      title: rawTitle || (category === "FOLDER" ? "مجلد داتا المادة الشامل" : "ملف المادة"),
-      sequence_no: row.sequence_no ? Number(row.sequence_no) : null,
-      groups,
+      title,
+      sequence_no: seqNo,
+      groups: rawGroups,
       drive_url: driveUrl,
-      original_filename: sanitizeText(String(row.original_filename || "")),
+      original_filename: sanitizeText(String(row.original_filename || "")) || undefined,
       added_on: addedOn,
-      status,
-      notes,
+      status: "PUBLISHED",
+      notes: getField(row, "notes", "ملاحظات", "note") || undefined,
     });
 
     if (!rawParsed.success) {
@@ -192,62 +226,15 @@ export function normalizeMaterials(
       continue;
     }
 
-    const item = rawParsed.data;
-
-    // Must be PUBLISHED to appear to students
-    if (item.status !== "PUBLISHED") {
-      continue;
-    }
-
-    // Must reference valid active subject
-    if (!validSubjectIds.has(item.subject_id)) {
+    if (!validSubjectIds.has(resolvedSub)) {
       errors.push({
         tab: "Materials",
         id: rawId,
-        reason: `Referenced unknown or inactive subject_id '${item.subject_id}'`,
+        reason: `Referenced unknown or inactive subject_id '${resolvedSub}'`,
       });
       continue;
     }
 
-    // Must have valid drive_url
-    if (!item.drive_url || !item.drive_url.startsWith("https://")) {
-      errors.push({
-        tab: "Materials",
-        id: rawId,
-        reason: "drive_url is missing or not HTTPS",
-      });
-      continue;
-    }
-
-    let isGoogleDriveUrl = false;
-    try {
-      const u = new URL(item.drive_url);
-      isGoogleDriveUrl =
-        u.hostname === "drive.google.com" || u.hostname === "docs.google.com";
-    } catch {
-      isGoogleDriveUrl = false;
-    }
-
-    if (!isGoogleDriveUrl) {
-      errors.push({
-        tab: "Materials",
-        id: rawId,
-        reason: "drive_url must be on drive.google.com or docs.google.com",
-      });
-      continue;
-    }
-
-    // Must have added_on date
-    if (!item.added_on || !/^\d{4}-\d{2}-\d{2}$/.test(item.added_on)) {
-      errors.push({
-        tab: "Materials",
-        id: rawId,
-        reason: "added_on must be YYYY-MM-DD",
-      });
-      continue;
-    }
-
-    const parsedGroups = parseGroupList(item.groups);
     const invalidGroups = parsedGroups.filter((g) => !isValidCohortGroup(g, false));
     if (invalidGroups.length > 0) {
       errors.push({
@@ -260,15 +247,15 @@ export function normalizeMaterials(
 
     seenIds.add(rawId);
     materials.push({
-      material_id: item.material_id,
-      subject_id: item.subject_id,
-      category: item.category,
-      title: item.title,
-      sequence_no: item.sequence_no ?? null,
+      material_id: rawId,
+      subject_id: resolvedSub,
+      category: category as PublicMaterial["category"],
+      title,
+      sequence_no: seqNo,
       groups: parsedGroups,
-      drive_url: item.drive_url,
-      original_filename: item.original_filename || undefined,
-      added_on: item.added_on,
+      drive_url: driveUrl,
+      original_filename: sanitizeText(String(row.original_filename || "")) || undefined,
+      added_on: addedOn,
       status: "PUBLISHED",
     });
   }
