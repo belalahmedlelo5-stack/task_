@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json(data, {
       status: 200,
       headers: {
-        "Cache-Control": "public, max-age=0, s-maxage=60, stale-while-revalidate=60",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
         "Content-Type": "application/json; charset=utf-8",
       },
     });

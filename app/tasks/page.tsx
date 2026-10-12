@@ -3,7 +3,8 @@ import { getPublicData } from "@/lib/data/public-service";
 import { TaskList } from "@/components/tasks/TaskList";
 import { CheckSquare } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function TasksPage() {
   const { tasks, subjects, materials } = await getPublicData();

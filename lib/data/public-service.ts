@@ -6,7 +6,7 @@ import { fetchRawDataFromSheets, isGoogleSheetsConfigured } from "@/lib/google/s
 // Cache for public data to reduce external API overhead
 let cachedData: PublicData | null = null;
 let lastFetchTime = 0;
-const CACHE_TTL_MS = 10 * 1000; // 10 seconds
+const CACHE_TTL_MS = 2 * 1000; // 2 seconds for instant sheet reactivity
 
 export async function getPublicData(): Promise<PublicData> {
   const now = Date.now();
