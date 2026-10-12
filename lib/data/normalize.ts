@@ -109,17 +109,17 @@ function getField(row: RawRow, ...keys: string[]): string {
 }
 
 function resolveSubjectId(row: RawRow, validSubjectIds: Set<string>): string {
-  const directSub = getField(row, "subject_id", "subject", "المادة").toLowerCase().trim();
+  const directSub = getField(row, "subject_id", "subject", "المادة", "اسم المادة", "مادة").toLowerCase().trim();
   if (validSubjectIds.has(directSub)) return directSub;
 
-  const combined = Object.values(row).map((v) => String(v || "").toLowerCase()).join(" ");
-  if (combined.includes("stem cell") || combined.includes("خلايا") || combined.includes("جذعية") || combined.includes("mbscb403")) return "stem-cell-biology";
-  if (combined.includes("drug") || combined.includes("دواء") || combined.includes("ebdm151")) return "drug-monitoring";
-  if (combined.includes("microbial") || combined.includes("وراثة") || combined.includes("mbmg310")) return "microbial-genetics";
-  if (combined.includes("gene") || combined.includes("جيني") || combined.includes("mbgt309")) return "gene-therapy";
-  if (combined.includes("recombinant") || combined.includes("اتحاد") || combined.includes("mbbmbr213")) return "recombinant-dna-technology";
-  if (combined.includes("communication") || combined.includes("signaling") || combined.includes("إشارات") || combined.includes("اتصال") || combined.includes("mbccs410")) return "communication-cell-signaling";
-  if (combined.includes("industry") || combined.includes("bacterial") || combined.includes("بكتيرية") || combined.includes("صناعية") || combined.includes("mbibb313")) return "industry-bacterial-biotechnology";
+  const target = directSub || Object.values(row).map((v) => String(v || "").toLowerCase()).join(" ");
+  if (target.includes("stem cell") || target.includes("خلايا") || target.includes("جذعية") || target.includes("mbscb403")) return "stem-cell-biology";
+  if (target.includes("drug") || target.includes("دواء") || target.includes("دوائية") || target.includes("ebdm151")) return "drug-monitoring";
+  if (target.includes("microbial") || target.includes("وراثة") || target.includes("mbmg310")) return "microbial-genetics";
+  if (target.includes("gene") || target.includes("جيني") || target.includes("mbgt309")) return "gene-therapy";
+  if (target.includes("recombinant") || target.includes("اتحاد") || target.includes("حمض") || target.includes("mbbmbr213")) return "recombinant-dna-technology";
+  if (target.includes("communication") || target.includes("signaling") || target.includes("إشارات") || target.includes("اتصال") || target.includes("mbccs410")) return "communication-cell-signaling";
+  if (target.includes("industry") || target.includes("bacterial") || target.includes("بكتيرية") || target.includes("صناعية") || target.includes("mbibb313")) return "industry-bacterial-biotechnology";
 
   return "";
 }
@@ -307,12 +307,13 @@ export function normalizeTasks(
   let autoTaskId = 1;
 
   for (const row of rawRows) {
-    const rawSub = getField(row, "subject_id", "subject", "المادة");
-    const rawTitle = getField(row, "title", "name", "عنوان", "المهمة", "التكليف");
-    const description = getField(row, "description", "desc", "وصف", "تفاصيل");
+    const rawSub = getField(row, "اسم المادة", "المادة", "مادة", "subject_id", "subject");
+    const rawTitle = getField(row, "المهمة المطلوبة", "المهمة", "المطلوب", "التكليف", "task", "tasks", "title", "name", "عنوان");
+    const description = getField(row, "description", "desc", "وصف", "تفاصيل", "ملاحظات");
 
-    // Skip placeholder rows where no title or description was entered yet
+    // Skip empty or placeholder rows where no actual task was entered
     if (!rawTitle && !description) continue;
+    if (rawTitle === "-" || rawTitle === "--" || rawTitle === "لا يوجد" || rawTitle.toLowerCase() === "none") continue;
 
     const resolvedSub = resolveSubjectId(row, validSubjectIds) || rawSub.toLowerCase();
     if (!validSubjectIds.has(resolvedSub)) {
@@ -335,10 +336,21 @@ export function normalizeTasks(
       rawId = `task-${String(autoTaskId++).padStart(4, "0")}`;
     }
 
-    const title = rawTitle || `تكليف مادة ${resolvedSub}`;
-    const taskType = resolveTaskType(getField(row, "task_type", "type", "نوع"));
-    const rawGroups = getField(row, "groups", "جروب") || "ALL";
-    const dueDate = normalizeDate(getField(row, "due_date", "تاريخ", "تسليم")) || "";
+    const title = rawTitle || description || `تكليف مادة ${resolvedSub}`;
+    const rawType = getField(row, "task_type", "type", "نوع");
+    const taskType = resolveTaskType(rawType || title);
+
+    let rawGroups = getField(row, "groups", "جروب");
+    if (!rawGroups) {
+      const textToCheck = `${title} ${description}`;
+      const detected: string[] = [];
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Aaأ]|[\(\[\{]\s*[Aaأ]\s*[\)\]\}]/i.test(textToCheck)) detected.push("A");
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Bbب]|[\(\[\{]\s*[Bbب]\s*[\)\]\}]/i.test(textToCheck)) detected.push("B");
+      if (/(?:مجموعة|جروب|\bgroup\b)\s*[Ccج]|[\(\[\{]\s*[Ccج]\s*[\)\]\}]/i.test(textToCheck)) detected.push("C");
+      rawGroups = detected.length > 0 ? detected.join(",") : "ALL";
+    }
+
+    const dueDate = normalizeDate(getField(row, "due_date", "تاريخ", "تسليم", "موعد")) || "";
     const dueTime = normalizeTime(getField(row, "due_time", "وقت", "ساعة")) || "";
     const taskStatus = (getField(row, "task_status", "حالة") || "OPEN").toUpperCase() as "OPEN" | "CLOSED" | "CANCELLED";
     const createdOn = normalizeDate(getField(row, "created_on")) || "2026-10-12";

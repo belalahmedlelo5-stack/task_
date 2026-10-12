@@ -1,4 +1,8 @@
-task_id,subject_id,title,task_type,description,groups,due_date,due_time,related_material_ids,task_status,created_on,updated_on,publish_status
-task-0001,recombinant-dna-technology,Lab Report 1: Restriction Enzyme Digestion,ASSIGNMENT,Submit lab report covering plasmid digestion and gel electrophoresis protocol and results,ALL,2026-10-22,23:59,,OPEN,2026-10-12,2026-10-12,PUBLISHED
-task-0002,microbial-genetics,Problem Set 1: Transformation Efficiency,ASSIGNMENT,Calculate bacterial transformation efficiency from section data and answer discussion questions,ALL,2026-10-24,23:59,,OPEN,2026-10-12,2026-10-12,PUBLISHED
-task-0003,drug-monitoring,Case Study 1: Therapeutic Range Analysis,ASSIGNMENT,Analyze the pharmacokinetic profile and dosage adjustments for the provided patient scenario,ALL,2026-10-28,23:59,,OPEN,2026-10-12,2026-10-12,PUBLISHED
+اسم المادة (Subject),المهمة المطلوبة (Task)
+Stem Cell Biology (خلايا جذعية),presentation (بريزنتيشن للمجموعة A)
+Drug Monitoring (مراقبة دوائية),
+Microbial Genetics (وراثة ميكروبية),
+Gene Therapy (علاج جيني),
+Recombinant DNA Technology (تكنولوجيا اتحاد الحمض النووي),
+Communication and Cell Signaling (اتصال وإشارات خلوية),
+Industry and Bacterial Biotechnology (تكنولوجيا حيوية بكتيرية وصناعية),

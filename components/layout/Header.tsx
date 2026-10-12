@@ -12,9 +12,8 @@ export function Header() {
 
   const navLinks = [
     { href: "/", label: "الرئيسية", icon: Home },
-    { href: "/subjects", label: "المواد", icon: BookOpen },
-    { href: "/tasks", label: "التكليفات", icon: CheckSquare },
-    { href: "/schedule", label: "الجدول", icon: Calendar },
+    { href: "/subjects", label: "المواد والماتريال", icon: BookOpen },
+    { href: "/tasks", label: "التكليفات والمهام", icon: CheckSquare },
     { href: "/about", label: "عن المنصة", icon: HelpCircle },
   ];
 

@@ -61,7 +61,7 @@ export default async function HomePage() {
             منصة المواد والتكليفات الدراسية
           </h1>
           <p className="text-emerald-100 text-sm leading-relaxed">
-            مرجع موحد لكافة محاضرات وسكاشن وتكليفات الدفعة، مع متابعة مواعيد التسليم وجدول تبادل المجموعات مباشرة من Google Sheets.
+            مرجع موحد لكافة محاضرات وسكاشن وتكليفات الدفعة، لمتابعة المهام المطلوبة وماتريال المواد مباشرة وبشكل لحظي من Google Sheets.
           </p>
         </div>
 
@@ -72,21 +72,14 @@ export default async function HomePage() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-white text-emerald-800 hover:bg-emerald-50 rounded-xl text-xs sm:text-sm font-bold shadow-xs transition-colors"
           >
             <CheckSquare className="w-4 h-4" />
-            التكليفات المطلوبة
-          </Link>
-          <Link
-            href="/schedule"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-xl text-xs sm:text-sm font-medium border border-emerald-500 transition-colors"
-          >
-            <Calendar className="w-4 h-4" />
-            جدول المحاضرات والسكاشن
+            التكليفات والمهام المطلوبة
           </Link>
           <Link
             href="/subjects"
             className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/80 hover:bg-emerald-600 text-white rounded-xl text-xs sm:text-sm font-medium border border-emerald-500 transition-colors"
           >
             <BookOpen className="w-4 h-4" />
-            المواد الدراسية (7)
+            المواد والماتريال (7 مواد)
           </Link>
         </div>
       </section>

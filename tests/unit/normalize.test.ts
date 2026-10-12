@@ -240,3 +240,44 @@ test("normalizeAllData automatically pads single-digit time and formats slash da
   assert.equal(data.sessions[1].end_time, "10:25");
 });
 
+test("normalizeAllData parses 2-column Tasks sheet format accurately", () => {
+  const raw = {
+    subjects: [
+      {
+        subject_id: "stem-cell-biology",
+        name_en: "Stem Cell Biology",
+        sort_order: 1,
+        status: "ACTIVE",
+      },
+      {
+        subject_id: "drug-monitoring",
+        name_en: "Drug Monitoring",
+        sort_order: 2,
+        status: "ACTIVE",
+      },
+    ],
+    materials: [],
+    tasks: [
+      {
+        "اسم المادة (Subject)": "Stem Cell Biology (خلايا جذعية)",
+        "المهمة المطلوبة (Task)": "presentation (بريزنتيشن للمجموعة A)",
+      },
+      {
+        "اسم المادة (Subject)": "Drug Monitoring (مراقبة دوائية)",
+        "المهمة المطلوبة (Task)": "",
+      },
+    ],
+    sessions: [],
+  };
+
+  const { data, errors } = normalizeAllData(raw);
+  assert.equal(errors.length, 0);
+  assert.equal(data.tasks.length, 1);
+  assert.equal(data.tasks[0].subject_id, "stem-cell-biology");
+  assert.equal(data.tasks[0].title, "presentation (بريزنتيشن للمجموعة A)");
+  assert.equal(data.tasks[0].task_type, "PRESENTATION");
+  assert.deepEqual(data.tasks[0].groups, ["A"]);
+  assert.equal(data.tasks[0].task_status, "OPEN");
+});
+
+

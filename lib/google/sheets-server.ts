@@ -84,7 +84,9 @@ function rowsToObjects(values?: string[][]): RawSheetRow[] {
 
     const obj: RawSheetRow = {};
     headers.forEach((header, colIndex) => {
-      obj[header] = row[colIndex] ? String(row[colIndex]).trim() : "";
+      if (header) {
+        obj[header] = row[colIndex] ? String(row[colIndex]).trim() : "";
+      }
     });
     rows.push(obj);
   }
