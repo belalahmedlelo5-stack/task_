@@ -97,6 +97,31 @@ export function TaskList({
     return true;
   });
 
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    const aCompleted = completedIds.includes(a.task_id);
+    const bCompleted = completedIds.includes(b.task_id);
+    if (aCompleted !== bCompleted) {
+      return aCompleted ? 1 : -1;
+    }
+
+    const aOverdue = a.task_status === "OPEN" && !aCompleted && isOverdueInCairo(a.due_date, a.due_time);
+    const bOverdue = b.task_status === "OPEN" && !bCompleted && isOverdueInCairo(b.due_date, b.due_time);
+    if (aOverdue !== bOverdue) {
+      return aOverdue ? -1 : 1;
+    }
+
+    if (a.due_date && !b.due_date) return -1;
+    if (!a.due_date && b.due_date) return 1;
+
+    if (a.due_date && b.due_date) {
+      const dComp = a.due_date.localeCompare(b.due_date);
+      if (dComp !== 0) return dComp;
+      return (a.due_time || "").localeCompare(b.due_time || "");
+    }
+
+    return a.task_id.localeCompare(b.task_id);
+  });
+
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
@@ -120,14 +145,14 @@ export function TaskList({
       />
 
       {/* Results List */}
-      {filteredTasks.length === 0 ? (
+      {sortedTasks.length === 0 ? (
         <EmptyState
           title="لا توجد تكليفات مطابقة"
           description="جرّب تغيير خيارات البحث أو تصفية المجموعات لعرض التكليفات."
         />
       ) : (
         <div className="grid gap-3">
-          {filteredTasks.map((task) => {
+          {sortedTasks.map((task) => {
             const relMaterials = task.related_material_ids
               .map((id) => materialMap.get(id))
               .filter((m): m is PublicMaterial => Boolean(m));

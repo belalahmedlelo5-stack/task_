@@ -121,3 +121,65 @@ test("RawSessionSchema accepts valid session", () => {
   });
   assert.equal(result.success, true);
 });
+
+test("RawTaskSchema rejects due_time without due_date", () => {
+  const result = RawTaskSchema.safeParse({
+    task_id: "tsk-0002",
+    subject_id: "gene-therapy",
+    title: "Missing Date Task",
+    task_type: "ASSIGNMENT",
+    groups: "ALL",
+    due_date: "",
+    due_time: "14:00",
+    task_status: "OPEN",
+    created_on: "2026-10-12",
+    updated_on: "2026-10-12",
+    publish_status: "PUBLISHED",
+  });
+  assert.equal(result.success, false);
+});
+
+test("RawTaskSchema rejects malformed due_time", () => {
+  const result = RawTaskSchema.safeParse({
+    task_id: "tsk-0003",
+    subject_id: "gene-therapy",
+    title: "Malformed Time Task",
+    task_type: "ASSIGNMENT",
+    groups: "ALL",
+    due_date: "2026-10-25",
+    due_time: "25:99",
+    task_status: "OPEN",
+    created_on: "2026-10-12",
+    updated_on: "2026-10-12",
+    publish_status: "PUBLISHED",
+  });
+  assert.equal(result.success, false);
+});
+
+test("RawSessionSchema rejects end_time without start_time", () => {
+  const result = RawSessionSchema.safeParse({
+    session_id: "ses-0002",
+    subject_id: "stem-cell-biology",
+    session_type: "SECTION",
+    session_date: "2026-10-18",
+    start_time: "",
+    end_time: "11:00",
+    groups: "A",
+    status: "SCHEDULED",
+  });
+  assert.equal(result.success, false);
+});
+
+test("RawSessionSchema rejects end_time earlier than start_time", () => {
+  const result = RawSessionSchema.safeParse({
+    session_id: "ses-0003",
+    subject_id: "stem-cell-biology",
+    session_type: "SECTION",
+    session_date: "2026-10-18",
+    start_time: "14:00",
+    end_time: "10:00",
+    groups: "A",
+    status: "SCHEDULED",
+  });
+  assert.equal(result.success, false);
+});

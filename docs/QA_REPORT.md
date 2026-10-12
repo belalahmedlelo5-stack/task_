@@ -8,17 +8,18 @@
 
 ## 1. Automated Test Suite Execution
 
-### 1.1 Unit & Contract Tests (`npm run test`)
+### 1.1 Automated Test Suite (`npm run test`)
 - **Framework:** Node Test Runner (`node --import tsx --test`)
-- **Total Tests:** 21
-- **Passed:** 21 (100%)
+- **Total Tests:** 28
+- **Passed:** 28 (100%)
 - **Failed:** 0
 - **Suites Covered:**
-  - `tests/unit/schema.test.ts`: Zod validation for Subjects, Materials, Tasks, Sessions, and Google Drive URL domain security.
-  - `tests/unit/normalize.test.ts`: Data normalization, strip confidential admin notes, filter DRAFT and ARCHIVED items, and isolate malformed rows.
+  - `tests/unit/schema.test.ts`: Zod validation for Subjects, Materials, Tasks, Sessions; Google Drive domain sandboxing; strict validation that `due_time` requires `due_date`, and session `end_time > start_time`.
+  - `tests/unit/normalize.test.ts`: Data normalization, stripping admin notes, filtering DRAFT/ARCHIVED, isolating malformed rows, validating cohort group tokens, and rejecting missing `related_material_ids`.
   - `tests/unit/cairo.test.ts`: `Africa/Cairo` timezone calculations, overdue status checking with/without `due_time`, and Arabic deadline formatting.
   - `tests/unit/group-filter.test.ts`: Cohort filtering rules (`ALL`, `A`, `B`, `C`), including unconfirmed `TBD` sessions visible to all cohorts.
   - `tests/unit/student-preferences.test.ts`: `localStorage` keys and fallbacks for server-side environments.
+  - `tests/e2e/public-api.test.ts`: Integration test verifying public API schema conformance, HTTP 200, Cache-Control headers, zero secret leaks, zero notes, and Drive URL sandboxing.
 
 ### 1.2 Data Contract Validation (`npm run validate:data`)
 - **Script:** `scripts/validate-data.ts`

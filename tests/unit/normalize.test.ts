@@ -88,3 +88,92 @@ test("normalizeAllData isolates invalid rows without crashing", () => {
   assert.ok(unknownSubErr);
   assert.match(unknownSubErr.reason, /unknown or inactive subject_id/);
 });
+
+test("normalizeAllData rejects tasks with missing related_material_ids", () => {
+  const raw = {
+    subjects: [
+      {
+        subject_id: "gene-therapy",
+        name_en: "Gene Therapy",
+        sort_order: 1,
+        status: "ACTIVE",
+      },
+    ],
+    materials: [
+      {
+        material_id: "mat-0001",
+        subject_id: "gene-therapy",
+        category: "LECTURE",
+        title: "Gene Therapy Lec 1",
+        groups: "ALL",
+        drive_url: "https://drive.google.com/file/d/abc/view",
+        added_on: "2026-10-12",
+        status: "PUBLISHED",
+      },
+    ],
+    tasks: [
+      {
+        task_id: "tsk-0001",
+        subject_id: "gene-therapy",
+        title: "Task with broken material link",
+        task_type: "ASSIGNMENT",
+        groups: "ALL",
+        due_date: "2026-10-25",
+        related_material_ids: "mat-0001|mat-9999",
+        task_status: "OPEN",
+        created_on: "2026-10-12",
+        updated_on: "2026-10-12",
+        publish_status: "PUBLISHED",
+      },
+    ],
+    sessions: [],
+  };
+
+  const { data, errors } = normalizeAllData(raw);
+  assert.equal(data.tasks.length, 0);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].reason, /non-existent or unpublished material_id/);
+});
+
+test("normalizeAllData rejects invalid cohort group tokens", () => {
+  const raw = {
+    subjects: [
+      {
+        subject_id: "gene-therapy",
+        name_en: "Gene Therapy",
+        sort_order: 1,
+        status: "ACTIVE",
+      },
+    ],
+    materials: [
+      {
+        material_id: "mat-0001",
+        subject_id: "gene-therapy",
+        category: "LECTURE",
+        title: "Bad Group Material",
+        groups: "GROUP_Z",
+        drive_url: "https://drive.google.com/file/d/abc/view",
+        added_on: "2026-10-12",
+        status: "PUBLISHED",
+      },
+    ],
+    tasks: [],
+    sessions: [
+      {
+        session_id: "ses-0001",
+        subject_id: "gene-therapy",
+        session_type: "LECTURE",
+        session_date: "2026-10-15",
+        groups: "INVALID_GROUP",
+        status: "SCHEDULED",
+      },
+    ],
+  };
+
+  const { data, errors } = normalizeAllData(raw);
+  assert.equal(data.materials.length, 0);
+  assert.equal(data.sessions.length, 0);
+  assert.equal(errors.length, 2);
+  assert.match(errors[0].reason, /Invalid group token/);
+  assert.match(errors[1].reason, /Invalid group token/);
+});

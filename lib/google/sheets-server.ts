@@ -113,10 +113,10 @@ export async function fetchRawDataFromSheets(): Promise<GoogleSheetsRawData> {
   const token = await getGoogleAccessToken(clientEmail, privateKey);
 
   const ranges = [
-    "Subjects!A1:Z50",
-    "Materials!A1:Z500",
-    "Tasks!A1:Z500",
-    "Sessions!A1:Z500",
+    "Subjects!A1:Z",
+    "Materials!A1:Z",
+    "Tasks!A1:Z",
+    "Sessions!A1:Z",
   ];
 
   const url = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values:batchGet`);

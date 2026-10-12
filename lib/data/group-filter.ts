@@ -12,6 +12,19 @@
 
 export type StudentGroup = "ALL" | "A" | "B" | "C";
 
+export const VALID_STUDENT_GROUPS: readonly StudentGroup[] = ["ALL", "A", "B", "C"] as const;
+
+export function isValidCohortGroup(group: string, allowTbd = false): boolean {
+  const upper = group.trim().toUpperCase();
+  if (VALID_STUDENT_GROUPS.includes(upper as StudentGroup)) {
+    return true;
+  }
+  if (allowTbd && upper === "TBD") {
+    return true;
+  }
+  return false;
+}
+
 export function parseGroupList(rawGroups: string): string[] {
   if (!rawGroups || !rawGroups.trim()) {
     return ["ALL"];

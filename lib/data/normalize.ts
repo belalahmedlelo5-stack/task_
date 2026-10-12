@@ -9,7 +9,7 @@ import {
   RawSessionSchema,
   PublicData,
 } from "./schema";
-import { parseGroupList } from "./group-filter";
+import { parseGroupList, isValidCohortGroup } from "./group-filter";
 
 export type RawRow = Record<string, unknown>;
 
@@ -164,6 +164,17 @@ export function normalizeMaterials(
       continue;
     }
 
+    const parsedGroups = parseGroupList(item.groups);
+    const invalidGroups = parsedGroups.filter((g) => !isValidCohortGroup(g, false));
+    if (invalidGroups.length > 0) {
+      errors.push({
+        tab: "Materials",
+        id: rawId,
+        reason: `Invalid group token(s): ${invalidGroups.join(", ")}. Allowed: ALL, A, B, C`,
+      });
+      continue;
+    }
+
     seenIds.add(rawId);
     materials.push({
       material_id: item.material_id,
@@ -171,7 +182,7 @@ export function normalizeMaterials(
       category: item.category,
       title: item.title,
       sequence_no: item.sequence_no ?? null,
-      groups: parseGroupList(item.groups),
+      groups: parsedGroups,
       drive_url: item.drive_url,
       original_filename: item.original_filename || undefined,
       added_on: item.added_on,
@@ -242,6 +253,17 @@ export function normalizeTasks(
       continue;
     }
 
+    const parsedGroups = parseGroupList(item.groups);
+    const invalidGroups = parsedGroups.filter((g) => !isValidCohortGroup(g, false));
+    if (invalidGroups.length > 0) {
+      errors.push({
+        tab: "Tasks",
+        id: rawId,
+        reason: `Invalid group token(s): ${invalidGroups.join(", ")}. Allowed: ALL, A, B, C`,
+      });
+      continue;
+    }
+
     // Validate related materials if specified
     const relatedIds = item.related_material_ids
       ? item.related_material_ids
@@ -250,7 +272,15 @@ export function normalizeTasks(
           .filter(Boolean)
       : [];
 
-    const validRelated = relatedIds.filter((id) => validMaterialIds.has(id));
+    const missingRelated = relatedIds.filter((id) => !validMaterialIds.has(id));
+    if (missingRelated.length > 0) {
+      errors.push({
+        tab: "Tasks",
+        id: rawId,
+        reason: `related_material_ids contains non-existent or unpublished material_id(s): ${missingRelated.join(", ")}`,
+      });
+      continue;
+    }
 
     seenIds.add(rawId);
     tasks.push({
@@ -259,10 +289,10 @@ export function normalizeTasks(
       title: item.title,
       task_type: item.task_type,
       description: item.description || undefined,
-      groups: parseGroupList(item.groups),
+      groups: parsedGroups,
       due_date: item.due_date || null,
       due_time: item.due_time || null,
-      related_material_ids: validRelated,
+      related_material_ids: relatedIds,
       task_status: item.task_status,
       created_on: item.created_on,
       updated_on: item.updated_on,
@@ -323,6 +353,17 @@ export function normalizeSessions(
       continue;
     }
 
+    const parsedGroups = parseGroupList(item.groups);
+    const invalidGroups = parsedGroups.filter((g) => !isValidCohortGroup(g, true));
+    if (invalidGroups.length > 0) {
+      errors.push({
+        tab: "Sessions",
+        id: rawId,
+        reason: `Invalid group token(s): ${invalidGroups.join(", ")}. Allowed: ALL, A, B, C, TBD`,
+      });
+      continue;
+    }
+
     seenIds.add(rawId);
     sessions.push({
       session_id: item.session_id,
@@ -331,7 +372,7 @@ export function normalizeSessions(
       session_date: item.session_date,
       start_time: item.start_time || null,
       end_time: item.end_time || null,
-      groups: parseGroupList(item.groups),
+      groups: parsedGroups,
       location: item.location || undefined,
       note: item.note || undefined,
       status: item.status,

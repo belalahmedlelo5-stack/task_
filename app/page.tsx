@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { getPublicData } from "@/lib/data/public-service";
-import { TaskList } from "@/components/tasks/TaskList";
+import { DashboardTasks } from "@/components/tasks/DashboardTasks";
 import { MaterialRow } from "@/components/materials/MaterialRow";
 import { BookOpen, CheckSquare, Calendar, ArrowLeft, AlertCircle } from "lucide-react";
 
@@ -106,7 +106,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <TaskList tasks={tasks} subjects={subjects} materials={materials} />
+        <DashboardTasks tasks={tasks} subjects={subjects} materials={materials} />
       </section>
 
       {/* Section: Subjects Grid */}

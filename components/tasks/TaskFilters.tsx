@@ -24,9 +24,11 @@ export function TaskFilters({
     { value: "ALL", label: "كل الأنواع" },
     { value: "ASSIGNMENT", label: "تكليفات" },
     { value: "PRESENTATION", label: "عروض" },
+    { value: "DISCUSSION", label: "مناقشات" },
     { value: "RESEARCH", label: "أبحاث" },
     { value: "QUIZ", label: "كويزات" },
     { value: "EXAM", label: "امتحانات" },
+    { value: "OTHER", label: "أخرى" },
   ];
 
   return (

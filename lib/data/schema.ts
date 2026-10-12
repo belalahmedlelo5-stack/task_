@@ -102,6 +102,32 @@ export const RawTaskSchema = z.object({
   created_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   updated_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   publish_status: PublishStatusEnum,
+}).superRefine((data, ctx) => {
+  if (data.due_date && data.due_date.trim()) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(data.due_date.trim())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "due_date must be YYYY-MM-DD format",
+        path: ["due_date"],
+      });
+    }
+  }
+  if (data.due_time && data.due_time.trim()) {
+    if (!data.due_date || !data.due_date.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "due_time cannot be specified without due_date",
+        path: ["due_time"],
+      });
+    }
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(data.due_time.trim())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "due_time must be HH:mm 24-hour format",
+        path: ["due_time"],
+      });
+    }
+  }
 });
 
 export const PublicTaskSchema = z.object({
@@ -131,6 +157,39 @@ export const RawSessionSchema = z.object({
   location: z.string().optional().default(""),
   note: z.string().optional().default(""),
   status: SessionStatusEnum,
+}).superRefine((data, ctx) => {
+  const startTime = data.start_time?.trim() || "";
+  const endTime = data.end_time?.trim() || "";
+  if (startTime) {
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(startTime)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "start_time must be HH:mm 24-hour format",
+        path: ["start_time"],
+      });
+    }
+  }
+  if (endTime) {
+    if (!startTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "end_time cannot be specified without start_time",
+        path: ["end_time"],
+      });
+    } else if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(endTime)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "end_time must be HH:mm 24-hour format",
+        path: ["end_time"],
+      });
+    } else if (endTime <= startTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "end_time must be strictly after start_time",
+        path: ["end_time"],
+      });
+    }
+  }
 });
 
 export const PublicSessionSchema = z.object({
