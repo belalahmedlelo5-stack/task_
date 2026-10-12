@@ -109,10 +109,10 @@ function getField(row: RawRow, ...keys: string[]): string {
 }
 
 function resolveSubjectId(row: RawRow, validSubjectIds: Set<string>): string {
-  const rawSubId = getField(row, "subject_id").toLowerCase();
-  if (validSubjectIds.has(rawSubId)) return rawSubId;
+  const directSub = getField(row, "subject_id", "subject", "المادة").toLowerCase().trim();
+  if (validSubjectIds.has(directSub)) return directSub;
 
-  const combined = `${row.subject_id || ""} ${row.subject_name || ""} ${row.name_en || ""} ${row.name_ar || ""} ${row.course_code || ""} ${row.subject || ""}`.toLowerCase();
+  const combined = Object.values(row).map((v) => String(v || "").toLowerCase()).join(" ");
   if (combined.includes("stem cell") || combined.includes("خلايا") || combined.includes("جذعية") || combined.includes("mbscb403")) return "stem-cell-biology";
   if (combined.includes("drug") || combined.includes("دواء") || combined.includes("ebdm151")) return "drug-monitoring";
   if (combined.includes("microbial") || combined.includes("وراثة") || combined.includes("mbmg310")) return "microbial-genetics";
@@ -276,6 +276,26 @@ export function normalizeMaterials(
   return { materials, errors };
 }
 
+function resolveTaskType(val?: unknown): "ASSIGNMENT" | "PRESENTATION" | "DISCUSSION" | "RESEARCH" | "QUIZ" | "EXAM" | "OTHER" {
+  const s = String(val || "").trim().toLowerCase();
+  if (s.includes("present") || s.includes("persent") || s.includes("عرض") || s.includes("بريزنت")) return "PRESENTATION";
+  if (s.includes("quiz") || s.includes("كويز") || s.includes("اختبار")) return "QUIZ";
+  if (s.includes("exam") || s.includes("امتحان")) return "EXAM";
+  if (s.includes("research") || s.includes("بحث")) return "RESEARCH";
+  if (s.includes("discuss") || s.includes("مناقشة")) return "DISCUSSION";
+  if (s.includes("assign") || s.includes("واجب") || s.includes("شيت") || s.includes("تقرير") || s.includes("report")) return "ASSIGNMENT";
+  return "ASSIGNMENT";
+}
+
+function resolveSessionType(val?: unknown): "LECTURE" | "SECTION" | "TUTORIAL" | "LAB" | "OTHER" {
+  const s = String(val || "").trim().toLowerCase();
+  if (s.includes("lab") || s.includes("معمل")) return "LAB";
+  if (s.includes("sec") || s.includes("سكشن")) return "SECTION";
+  if (s.includes("tut") || s.includes("توتور")) return "TUTORIAL";
+  if (s.includes("lec") || s.includes("محاضر")) return "LECTURE";
+  return "LECTURE";
+}
+
 export function normalizeTasks(
   rawRows: Array<RawRow>,
   validSubjectIds: Set<string>,
@@ -284,30 +304,64 @@ export function normalizeTasks(
   const tasks: PublicTask[] = [];
   const errors: Array<{ tab: string; id: string; reason: string }> = [];
   const seenIds = new Set<string>();
+  let autoTaskId = 1;
 
   for (const row of rawRows) {
-    const rawId = sanitizeText(String(row.task_id || ""));
-    if (!rawId) continue;
+    const rawSub = getField(row, "subject_id", "subject", "المادة");
+    const rawTitle = getField(row, "title", "name", "عنوان", "المهمة", "التكليف");
+    const description = getField(row, "description", "desc", "وصف", "تفاصيل");
+
+    // Skip placeholder rows where no title or description was entered yet
+    if (!rawTitle && !description) continue;
+
+    const resolvedSub = resolveSubjectId(row, validSubjectIds) || rawSub.toLowerCase();
+    if (!validSubjectIds.has(resolvedSub)) {
+      if (rawSub) {
+        errors.push({
+          tab: "Tasks",
+          id: String(row.task_id || "new"),
+          reason: `Referenced unknown or inactive subject_id '${resolvedSub}'`,
+        });
+      }
+      continue;
+    }
+
+    let rawId = getField(row, "task_id", "id");
+    if (!rawId || !/^(tsk|task)-[0-9]{4,}$/.test(rawId)) {
+      rawId = `task-${String(autoTaskId++).padStart(4, "0")}`;
+    }
 
     if (seenIds.has(rawId)) {
-      errors.push({ tab: "Tasks", id: rawId, reason: "Duplicate task_id" });
-      continue;
+      rawId = `task-${String(autoTaskId++).padStart(4, "0")}`;
+    }
+
+    const title = rawTitle || `تكليف مادة ${resolvedSub}`;
+    const taskType = resolveTaskType(getField(row, "task_type", "type", "نوع"));
+    const rawGroups = getField(row, "groups", "جروب") || "ALL";
+    const dueDate = normalizeDate(getField(row, "due_date", "تاريخ", "تسليم")) || "";
+    const dueTime = normalizeTime(getField(row, "due_time", "وقت", "ساعة")) || "";
+    const taskStatus = (getField(row, "task_status", "حالة") || "OPEN").toUpperCase() as "OPEN" | "CLOSED" | "CANCELLED";
+    const createdOn = normalizeDate(getField(row, "created_on")) || "2026-10-12";
+    const updatedOn = normalizeDate(getField(row, "updated_on")) || "2026-10-12";
+    let publishStatus = (getField(row, "publish_status") || "PUBLISHED").toUpperCase();
+    if (publishStatus !== "DRAFT" && publishStatus !== "ARCHIVED") {
+      publishStatus = "PUBLISHED";
     }
 
     const rawParsed = RawTaskSchema.safeParse({
       task_id: rawId,
-      subject_id: sanitizeText(String(row.subject_id || "")),
-      title: sanitizeText(String(row.title || "")),
-      task_type: String(row.task_type || "").trim().toUpperCase(),
-      description: sanitizeText(String(row.description || "")),
-      groups: sanitizeText(String(row.groups || "ALL")),
-      due_date: normalizeDate(row.due_date),
-      due_time: normalizeTime(row.due_time),
+      subject_id: resolvedSub,
+      title,
+      task_type: taskType,
+      description,
+      groups: rawGroups,
+      due_date: dueDate,
+      due_time: dueTime,
       related_material_ids: sanitizeText(String(row.related_material_ids || "")),
-      task_status: String(row.task_status || "OPEN").trim().toUpperCase(),
-      created_on: normalizeDate(row.created_on),
-      updated_on: normalizeDate(row.updated_on),
-      publish_status: String(row.publish_status || "").trim().toUpperCase(),
+      task_status: taskStatus,
+      created_on: createdOn,
+      updated_on: updatedOn,
+      publish_status: publishStatus,
     });
 
     if (!rawParsed.success) {
@@ -323,16 +377,6 @@ export function normalizeTasks(
 
     // Must be PUBLISHED to appear to students
     if (item.publish_status !== "PUBLISHED") {
-      continue;
-    }
-
-    // Must reference valid active subject
-    if (!validSubjectIds.has(item.subject_id)) {
-      errors.push({
-        tab: "Tasks",
-        id: rawId,
-        reason: `Referenced unknown or inactive subject_id '${item.subject_id}'`,
-      });
       continue;
     }
 
@@ -393,27 +437,42 @@ export function normalizeSessions(
   const sessions: PublicSession[] = [];
   const errors: Array<{ tab: string; id: string; reason: string }> = [];
   const seenIds = new Set<string>();
+  let autoSesId = 1;
 
   for (const row of rawRows) {
-    const rawId = sanitizeText(String(row.session_id || ""));
-    if (!rawId) continue;
+    const rawSub = getField(row, "subject_id", "subject", "المادة");
+    if (!rawSub && !row.session_id) continue;
+
+    let rawId = getField(row, "session_id", "id");
+    if (!rawId || !/^(ses|session)-[0-9]{4,}$/.test(rawId)) {
+      rawId = `ses-${String(autoSesId++).padStart(4, "0")}`;
+    }
 
     if (seenIds.has(rawId)) {
-      errors.push({ tab: "Sessions", id: rawId, reason: "Duplicate session_id" });
-      continue;
+      rawId = `ses-${String(autoSesId++).padStart(4, "0")}`;
     }
+
+    const resolvedSub = resolveSubjectId(row, validSubjectIds) || rawSub.toLowerCase();
+    const sessionType = resolveSessionType(getField(row, "session_type", "type", "نوع"));
+    const sessionDate = normalizeDate(getField(row, "session_date", "تاريخ")) || "2026-10-12";
+    const startTime = normalizeTime(getField(row, "start_time", "بداية", "وقت البداية"));
+    const endTime = normalizeTime(getField(row, "end_time", "نهاية", "وقت النهاية"));
+    const rawGroups = getField(row, "groups", "جروب") || "ALL";
+    const location = getField(row, "location", "قاعة", "مكان");
+    const note = getField(row, "note", "ملاحظات", "دكتور", "معيد");
+    const status = (getField(row, "status", "حالة") || "SCHEDULED").toUpperCase() as "SCHEDULED" | "CANCELLED" | "TENTATIVE";
 
     const rawParsed = RawSessionSchema.safeParse({
       session_id: rawId,
-      subject_id: sanitizeText(String(row.subject_id || "")),
-      session_type: String(row.session_type || "").trim().toUpperCase(),
-      session_date: normalizeDate(row.session_date),
-      start_time: normalizeTime(row.start_time),
-      end_time: normalizeTime(row.end_time),
-      groups: sanitizeText(String(row.groups || "ALL")),
-      location: sanitizeText(String(row.location || "")),
-      note: sanitizeText(String(row.note || "")),
-      status: String(row.status || "SCHEDULED").trim().toUpperCase(),
+      subject_id: resolvedSub,
+      session_type: sessionType,
+      session_date: sessionDate,
+      start_time: startTime,
+      end_time: endTime,
+      groups: rawGroups,
+      location,
+      note,
+      status: ["SCHEDULED", "CANCELLED", "TENTATIVE"].includes(status) ? status : "SCHEDULED",
     });
 
     if (!rawParsed.success) {

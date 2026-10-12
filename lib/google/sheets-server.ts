@@ -145,7 +145,7 @@ function parseCsvToObjects(csvText: string): RawSheetRow[] {
  * Fetches sheet data via public Google visualization CSV export
  */
 async function fetchTabCsv(sheetId: string, tabName: string): Promise<RawSheetRow[]> {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}&headers=1`;
   const res = await fetch(url, {
     next: { revalidate: 10 },
   });

@@ -95,14 +95,14 @@ export const RawTaskSchema = z.object({
   title: z.string().min(1),
   task_type: TaskTypeEnum,
   description: z.string().optional().default(""),
-  groups: z.string().min(1),
+  groups: z.string().optional().default("ALL"),
   due_date: z.string().optional().default(""),
   due_time: z.string().optional().default(""),
   related_material_ids: z.string().optional().default(""),
-  task_status: TaskStatusEnum,
-  created_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  updated_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  publish_status: PublishStatusEnum,
+  task_status: TaskStatusEnum.optional().default("OPEN"),
+  created_on: z.string().optional().default("2026-10-12"),
+  updated_on: z.string().optional().default("2026-10-12"),
+  publish_status: PublishStatusEnum.optional().default("PUBLISHED"),
 }).superRefine((data, ctx) => {
   if (data.due_date && data.due_date.trim()) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(data.due_date.trim())) {
@@ -154,10 +154,10 @@ export const RawSessionSchema = z.object({
   session_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   start_time: z.string().optional().default(""),
   end_time: z.string().optional().default(""),
-  groups: z.string().min(1),
+  groups: z.string().optional().default("ALL"),
   location: z.string().optional().default(""),
   note: z.string().optional().default(""),
-  status: SessionStatusEnum,
+  status: SessionStatusEnum.optional().default("SCHEDULED"),
 }).superRefine((data, ctx) => {
   const startTime = data.start_time?.trim() || "";
   const endTime = data.end_time?.trim() || "";
