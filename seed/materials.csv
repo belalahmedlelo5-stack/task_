@@ -1,0 +1,33 @@
+material_id,subject_id,category,title,sequence_no,groups,drive_url,original_filename,added_on,status,notes
+mat-0001,stem-cell-biology,LECTURE,Fertilization and Early Embryonic Development,,ALL,,Fertilization and Early Embryonic Development.pdf,2026-10-12,DRAFT,Needs human confirmation of affiliation to Stem Cell Biology
+mat-0002,stem-cell-biology,SECTION,Stem Cell Biology Section 3 (Topic A),3,ALL,,Stem Cell Biology Sec 3.pdf,2026-10-12,DRAFT,Section 3 Topic A; distinct from mat-0004
+mat-0003,stem-cell-biology,SECTION,Stem Cell Biology Section 2,2,ALL,,Stem Cell Biology sec 2.pdf,2026-10-12,DRAFT,Section 2 practical slides
+mat-0004,stem-cell-biology,SECTION,Stem Cell Section 3 (Topic B),3,ALL,,Stem Cell Sec 3.pdf,2026-10-12,DRAFT,Section 3 Topic B; distinct from mat-0002
+mat-0005,stem-cell-biology,SECTION,Stem Cell Lab Safety (Lab 1),1,ALL,,stem cell lab safety ( lab 1 ) final.pptx,2026-10-12,DRAFT,Lab 1 safety slides
+mat-0006,drug-monitoring,LECTURE,Drug Monitoring Lecture 2 (Slides),2,ALL,,Drug Monitoring 2.pptx,2026-10-12,DRAFT,Lecture 2 PPTX
+mat-0007,drug-monitoring,QUESTIONS,Drug Monitoring Lectures 1 & 2 Questions,1,ALL,,Lecture (1 & 2) Qs.pdf,2026-10-12,DRAFT,Revision and practice questions
+mat-0008,drug-monitoring,LECTURE,Therapeutic Drug Monitoring Lecture 1,1,ALL,,Therapeutic Drug Monitoring (Lec.1).pdf,2026-10-12,DRAFT,Lecture 1 PDF
+mat-0009,drug-monitoring,LECTURE,Therapeutic Drug Monitoring Lecture 2,2,ALL,,Therapeutic Drug Monitoring (Lec.2).pdf,2026-10-12,DRAFT,Lecture 2 PDF
+mat-0010,drug-monitoring,LECTURE,Drug Monitoring Lecture 1 (Slides),1,ALL,,drug monitoring 1.pptx,2026-10-12,DRAFT,Lecture 1 PPTX
+mat-0011,gene-therapy,LECTURE,Gene Therapy Lecture 1 (MBGT309),1,ALL,,Gene Therapy MBGT309 L 1.pdf,2026-10-12,DRAFT,Lecture 1 PDF
+mat-0012,gene-therapy,LECTURE,Gene Therapy Lecture 2 (MBGT309),2,ALL,,Gene Therapy MBGT309 L2.pdf,2026-10-12,DRAFT,Lecture 2 PDF
+mat-0013,gene-therapy,LECTURE,Gene Therapy Lecture 3 (MBGT309),3,ALL,,Gene Therapy MBGT309 L3.pdf,2026-10-12,DRAFT,Lecture 3 PDF
+mat-0014,gene-therapy,LECTURE,Gene Therapy Lecture 1 (Slides),1,ALL,,gene therapy 1.pptx,2026-10-12,DRAFT,Lecture 1 PPTX
+mat-0015,industry-bacterial-biotechnology,LECTURE,Industrial Lecture 1 - Bacterial Growth,1,ALL,,Industrial-L1 -Bacterial Growth.pdf,2026-10-12,DRAFT,Lecture 1 PDF
+mat-0016,industry-bacterial-biotechnology,LECTURE,Industrial Lecture 2 - Factors Affecting Bacterial Growth,2,ALL,,Lec.2 factors affecting bacterial growth.pdf,2026-10-12,DRAFT,Lecture 2 PDF
+mat-0017,industry-bacterial-biotechnology,LECTURE,Industrial Lecture 3 - Bacterial Metabolism,3,ALL,,Lect 3 bacterial metabolism.pdf,2026-10-12,DRAFT,Lecture 3 PDF
+mat-0018,industry-bacterial-biotechnology,SECTION,Industrial & Microbial Genetics Section 3,3,ALL,,Section 3 INDUSTERIAL AND MICROBIAL GENETICS ....pdf,2026-10-12,DRAFT,Section 3 practical
+mat-0019,industry-bacterial-biotechnology,SECTION,Industrial & Microbial Genetics Section 1,1,ALL,,sec 1 industerial and microbial genetics.pdf,2026-10-12,DRAFT,Section 1 practical
+mat-0020,industry-bacterial-biotechnology,SECTION,Industrial & Microbial Genetics Section 2 (Variant A),2,ALL,,sec 2 industerial and microbial genetics-1.pdf,2026-10-12,DRAFT,Section 2 practical 652KB
+mat-0021,industry-bacterial-biotechnology,SECTION,Industrial & Microbial Genetics Section 2 (Variant B),2,ALL,,sec 2 industerial and microbial genetics.pdf,2026-10-12,DRAFT,Section 2 practical 83KB
+mat-0022,microbial-genetics,LECTURE,Microbial Genetics Lecture 3 - Genetic Material & Replication,3,ALL,,L3 -Genetic material in microorganisms+bacterial replication.pdf,2026-10-12,DRAFT,Lecture 3 PDF
+mat-0023,microbial-genetics,LECTURE,Microbial Genetics Lecture 2 - Microbial Structure,2,ALL,,Lec 2 Microbial strucure- Dr Marwa.pdf,2026-10-12,DRAFT,Lecture 2 PDF
+mat-0024,microbial-genetics,LECTURE,Microbial Genetics Lecture 1 - Microbial Diversity,1,ALL,,Microbial genetics-L1 Microbial diversty.pdf,2026-10-12,DRAFT,Lecture 1 PDF
+mat-0025,recombinant-dna-technology,SUPPLEMENT,Recombinant DNA Lectures 1 & 2 Supplement,1,ALL,,recombinant dna lect one and 2  supplement.docx,2026-10-12,DRAFT,Supplement docx
+mat-0026,recombinant-dna-technology,SUPPLEMENT,Teaching Map for Recombinant DNA Technology,,ALL,,teaching mapforDNA technology.docx,2026-10-12,DRAFT,Course syllabus map
+mat-0027,recombinant-dna-technology,LECTURE,Recombinant DNA Technology Lecture 1 (Slides),1,ALL,,updatedlecture one DNA technology.pptx,2026-10-12,DRAFT,Lecture 1 PPTX
+mat-0028,communication-cell-signaling,LECTURE,Cell Signaling Presentation 1,1,ALL,,Presentation1.pdf,2026-10-12,DRAFT,Requires title and topic verification
+mat-0029,communication-cell-signaling,LECTURE,Cell Signaling Presentation 4,4,ALL,,Presentation4.pdf,2026-10-12,DRAFT,Requires title and topic verification
+mat-0030,communication-cell-signaling,LECTURE,Cell Signaling Lectures 2 & 3 (Modified),2,ALL,,signaling lecture 2 and 3 modified.pdf,2026-10-12,DRAFT,Lectures 2 & 3 PDF
+mat-0031,,OTHER,Biotechnology 4th Year Logbook,,ALL,,Biotech Logbook  4th_year biotechnology doc.pdf,2026-10-12,DRAFT,HOLD pending owner permission for public batch sharing
+mat-0032,,OTHER,Quotation - Commercial Price Quote,,ALL,,Quotation - SO34463 (1).pdf,2026-10-12,ARCHIVED,EXCLUDE strictly - Commercial quote forbidden from publication

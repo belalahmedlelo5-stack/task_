@@ -1,0 +1,8 @@
+subject_id,name_en,name_ar,course_code,sort_order,status
+stem-cell-biology,Stem Cell Biology,بيولوجيا الخلايا الجذعية,,1,ACTIVE
+drug-monitoring,Drug Monitoring,مراقبة الدواء العلاجية,,2,ACTIVE
+microbial-genetics,Microbial Genetics,الوراثة الميكروبية,,3,ACTIVE
+gene-therapy,Gene Therapy,العلاج الجيني,MBGT309,4,ACTIVE
+recombinant-dna-technology,Recombinant DNA Technology,تكنولوجيا الحمض النووي المؤتلف,,5,ACTIVE
+communication-cell-signaling,Communication and Cell Signaling,التواصل والإشارات الخلوية,,6,ACTIVE
+industry-bacterial-biotechnology,Industry and Bacterial Biotechnology,الصناعة والتكنولوجيا الحيوية البكتيرية,,7,ACTIVE
